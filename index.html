@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Hub IUG – Édition Communautaire</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="header-top">
+                <div class="logo-area">
+                    <i class="fas fa-cubes"></i>
+                    <h1>Hub IUG</h1>
+                </div>
+                <div class="header-actions">
+                    <!-- Bouton thème -->
+                    <button id="themeToggle" class="icon-btn" aria-label="Changer de thème">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <!-- Bouton langue -->
+                    <button id="langToggle" class="icon-btn" aria-label="Changer de langue">
+                        <i class="fas fa-language"></i>
+                    </button>
+                    <!-- Bouton connexion -->
+                    <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <!-- Menu burger (mobile) -->
+                    <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu mobile -->
+            <nav id="mobileMenu" class="mobile-menu hidden">
+                <ul>
+                    <li><a href="#" id="mobileLogin"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                    <li><a href="#" id="mobileAbout"><i class="fas fa-info-circle"></i> À propos</a></li>
+                    <li><a href="#" id="mobileFaq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    <li><a href="#" id="mobileLang"><i class="fas fa-language"></i> English</a></li>
+                </ul>
+            </nav>
+
+            <!-- Bandeau d'actualités -->
+            <div class="news-ticker">
+                <div class="ticker-content">
+                    <span>📢 Nouveau : Tutoriels vidéo disponibles pour BusEye et Cerise !</span>
+                    <span>⭐ OrientIUG fête ses 1 an cette semaine</span>
+                    <span>📚 Banque d'annales : plus de 500 sujets ajoutés</span>
+                </div>
+            </div>
+
+            <p class="subtitle">Votre boîte à outils étudiante, réinventée.</p>
+            <div class="header-decoration"></div>
+        </header>
+
+        <!-- GRILLE DES PROJETS -->
+        <div class="projects-grid">
+            <!-- Carte BusEye -->
+            <div class="card" data-url="#">
+                <div class="card-badges">
+                    <span class="badge popular">Populaire</span>
+                </div>
+                <div class="icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FF5714);">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h2>BusEye</h2>
+                <p>Suivez les bus en temps réel, horaires et itinéraires.</p>
+                <div class="card-footer">
+                    <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+                    <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+                        <i class="fas fa-play-circle"></i>
+                    </button>
+                </div>
+                <div class="card-shine"></div>
+            </div>
+
+            <!-- Carte Banque d'Annales -->
+            <div class="card" data-url="#">
+                <div class="card-badges">
+                    <span class="badge new">Nouveau</span>
+                </div>
+                <div class="icon-wrapper" style="background: linear-gradient(135deg, #4A90E2, #2C5F9A);">
+                    <span class="emoji-icon">📚</span>
+                </div>
+                <h2>Banque d'Annales IUG</h2>
+                <p>Annales des examens, filtrage par matière.</p>
+                <div class="card-footer">
+                    <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+                    <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+                        <i class="fas fa-play-circle"></i>
+                    </button>
+                </div>
+                <div class="card-shine"></div>
+            </div>
+
+            <!-- Carte Cerise -->
+            <div class="card" data-url="#">
+                <div class="card-badges"></div>
+                <div class="icon-wrapper" style="background: linear-gradient(135deg, #E94E3A, #B33C2E);">
+                    <span class="emoji-icon">🍒</span>
+                </div>
+                <h2>Cerise</h2>
+                <p>Assistante virtuelle pour la vie universitaire.</p>
+                <div class="card-footer">
+                    <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+                    <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+                        <i class="fas fa-play-circle"></i>
+                    </button>
+                </div>
+                <div class="card-shine"></div>
+            </div>
+
+            <!-- Carte OrientIUG -->
+            <div class="card" data-url="#">
+                <div class="card-badges"></div>
+                <div class="icon-wrapper" style="background: linear-gradient(135deg, #6C5B7B, #4A3A5A);">
+                    <i class="fas fa-compass"></i>
+                </div>
+                <h2>OrientIUG</h2>
+                <p>Orientation personnalisée et conseils parcours.</p>
+                <div class="card-footer">
+                    <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+                    <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+                        <i class="fas fa-play-circle"></i>
+                    </button>
+                </div>
+                <div class="card-shine"></div>
+            </div>
+        </div>
+
+        <!-- SECTION RECOMMANDATIONS -->
+        <section class="recommendations">
+            <h2>Recommandé pour vous</h2>
+            <div class="rec-cards">
+                <div class="rec-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Préparez vos partiels avec la Banque d'annales</span>
+                </div>
+                <div class="rec-card">
+                    <i class="fas fa-map-signs"></i>
+                    <span>Découvrez les parcours avec OrientIUG</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="footer-links">
+                <a href="#" id="aboutLink">À propos</a>
+                <a href="#" id="faqLink">FAQ / Aide</a>
+                <a href="#" id="contactLink">Contact</a>
+                <a href="#" id="accessibilityLink">Accessibilité</a>
+            </div>
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="ecoles">
+                <span>ESG</span> • <span>ISTA</span> • <span>ISA</span>
+            </div>
+            <p class="footer-institution">Institut Universitaire du Golfe de Guinée</p>
+            <p>© 2025 • Tous droits réservés</p>
+            <p class="contributeurs">🏆 Contributeurs du mois : Marie K., Jean K., Amadou D.</p>
+        </footer>
+
+        <!-- ÉLÉMENTS FLOTTANTS -->
+        <button id="helpButton" class="help-float" aria-label="Aide">
+            <i class="fas fa-question"></i>
+        </button>
+
+        <!-- Panneau d'accessibilité -->
+        <div id="accessibilityPanel" class="accessibility-panel hidden">
+            <h3>Accessibilité</h3>
+            <label>
+                Taille de police :
+                <select id="fontSize">
+                    <option value="normal">Normale</option>
+                    <option value="large">Grande</option>
+                    <option value="xlarge">Très grande</option>
+                </select>
+            </label>
+            <label>
+                Contraste :
+                <select id="contrast">
+                    <option value="normal">Normal</option>
+                    <option value="high">Élevé</option>
+                </select>
+            </label>
+            <button id="closeAccessibility">Fermer</button>
+        </div>
+
+        <!-- Pop-up de sondage -->
+        <div id="surveyPopup" class="survey-popup hidden">
+            <p>Quel outil utilisez-vous le plus ?</p>
+            <div class="survey-options">
+                <button data-tool="buseye">BusEye</button>
+                <button data-tool="annales">Annales</button>
+                <button data-tool="cerise">Cerise</button>
+                <button data-tool="orient">OrientIUG</button>
+            </div>
+            <button id="closeSurvey">Plus tard</button>
+        </div>
+    </div>
+
+    <!-- Modale de connexion -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Connexion</h2>
+            <p>Connectez-vous avec votre compte ENT</p>
+            <input type="text" placeholder="Identifiant">
+            <input type="password" placeholder="Mot de passe">
+            <button id="loginSubmit">Se connecter</button>
+            <button id="loginClose">Fermer</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
