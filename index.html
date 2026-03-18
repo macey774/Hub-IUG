@@ -14,151 +14,247 @@
 </head>
 
 <body>
+  <!-- Bande floutée de 10px en haut -->
+  <div class="blur-top-gap"></div>
 
-<!-- Bande floutée de 10px en haut -->
-<div class="blur-top-gap"></div>
+  <!-- BARRE FIXE COMMUNE -->
+  <div class="header-top">
+    <div class="logo-area" id="header-logo">
+      <span id="back-button" class="back-button hidden"><i class="fas fa-arrow-left"></i></span>
+      <i class="fas fa-cubes" id="header-icon"></i>
+      <h1 id="header-title">Hub IUG</h1>
+    </div>
+    <div class="header-actions">
+      <button id="themeToggle" class="icon-btn desktop-only" aria-label="Changer de thème">
+        <i class="fas fa-sun"></i>
+      </button>
+      <button id="langToggle" class="icon-btn desktop-only" aria-label="Changer de langue">
+        <i class="fas fa-language"></i>
+      </button>
+      <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
+        <i class="fas fa-user-circle"></i>
+      </button>
+      <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu mobile (caché par défaut) -->
+  <nav id="mobileMenu" class="mobile-menu hidden">
+    <ul>
+      <li><a href="#" id="mobileThemeToggle"><i class="fas fa-sun"></i> Mode clair/sombre</a></li>
+      <li><a href="#" id="mobileLangToggle"><i class="fas fa-language"></i> English</a></li>
+      <li><a href="#" id="mobileLogin"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+      <li><a href="#" id="mobileAbout"><i class="fas fa-info-circle"></i> À propos</a></li>
+      <li><a href="#" id="mobileFaq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+    </ul>
+  </nav>
+
   <div class="container">
-    <!-- HEADER -->
-    <header>
-      <div class="header-top">
-        <div class="logo-area">
-          <i class="fas fa-cubes"></i>
-          <h1>Hub IUG</h1>
+    <!-- SECTION HUB (visible par défaut) -->
+    <div id="hub-section">
+      <header>
+        <div class="news-ticker">
+          <div class="ticker-content">
+            <span>📢 Nouveau : Tutoriels vidéo disponibles pour BusEye et Cerise !</span>
+            <span>⭐ OrientIUG fête ses 1 an cette semaine</span>
+            <span>📚 Banque d'annales : plus de 500 sujets ajoutés</span>
+          </div>
         </div>
-        <div class="header-actions">
-          <!-- Bouton thème -->
-          <button id="themeToggle" class="icon-btn" aria-label="Changer de thème">
-            <i class="fas fa-sun"></i>
-          </button>
-          <!-- Bouton langue -->
-          <button id="langToggle" class="icon-btn" aria-label="Changer de langue">
-            <i class="fas fa-language"></i>
-          </button>
-          <!-- Bouton connexion -->
-          <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
-            <i class="fas fa-user-circle"></i>
-          </button>
-          <!-- Menu burger (mobile) -->
-          <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
-            <i class="fas fa-bars"></i>
-          </button>
+        <p class="subtitle">Votre boîte à outils étudiante, réinventée.</p>
+        <div class="header-decoration"></div>
+      </header>
+
+      <!-- GRILLE DES PROJETS -->
+      <div class="projects-grid">
+        <!-- Carte BusEye -->
+        <div class="card" data-url="#">
+          <div class="card-badges">
+            <span class="badge popular">Populaire</span>
+          </div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FF5714);">
+            <i class="fas fa-bus"></i>
+          </div>
+          <h2>BusEye</h2>
+          <p>Suivez les bus en temps réel, horaires et itinéraires.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte Banque d'Annales -->
+        <div class="card" data-url="#">
+          <div class="card-badges">
+            <span class="badge new">Nouveau</span>
+          </div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #4A90E2, #2C5F9A);">
+            <span class="emoji-icon">📚</span>
+          </div>
+          <h2>Banque d'Annales IUG</h2>
+          <p>Annales des examens, filtrage par matière.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte Cerise -->
+        <div class="card" data-url="#">
+          <div class="card-badges"></div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #E94E3A, #B33C2E);">
+            <span class="emoji-icon">😉</span>
+          </div>
+          <h2>Cerise</h2>
+          <p>Assistante virtuelle pour la vie universitaire.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte OrientIUG -->
+        <div class="card" id="orientiug-card" data-url="#">
+          <div class="card-badges"></div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #6C5B7B, #4A3A5A);">
+            <i class="fas fa-compass"></i>
+          </div>
+          <h2>OrientIUG</h2>
+          <p>Orientation personnalisée et conseils parcours.</p>
+          <div class="card-footer">
+            <button class="btn" id="orientiug-access">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
         </div>
       </div>
 
-      <!-- Menu mobile -->
-      <nav id="mobileMenu" class="mobile-menu hidden">
-        <ul>
-          <li><a href="#" id="mobileLogin"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
-          <li><a href="#" id="mobileAbout"><i class="fas fa-info-circle"></i> À propos</a></li>
-          <li><a href="#" id="mobileFaq"><i class="fas fa-question-circle"></i> FAQ</a></li>
-          <li><a href="#" id="mobileLang"><i class="fas fa-language"></i> English</a></li>
-        </ul>
-      </nav>
+      <!-- SECTION RECOMMANDATIONS -->
+      <section class="recommendations">
+        <h2>Recommandé pour vous</h2>
+        <div class="rec-cards">
+          <div class="rec-card">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Préparez vos partiels avec la Banque d'annales</span>
+          </div>
+          <div class="rec-card">
+            <i class="fas fa-map-signs"></i>
+            <span>Découvrez les parcours avec OrientIUG</span>
+          </div>
+        </div>
+      </section>
+    </div>
 
-      <!-- Bandeau d'actualités -->
-      <div class="news-ticker">
-        <div class="ticker-content">
-          <span>📢 Nouveau : Tutoriels vidéo disponibles pour BusEye et Cerise !</span>
-          <span>⭐ OrientIUG fête ses 1 an cette semaine</span>
-          <span>📚 Banque d'annales : plus de 500 sujets ajoutés</span>
+    <!-- SECTION ORIENTIUG (cachée par défaut) -->
+    <div id="orientiug-section" class="hidden">
+      <!-- Présentation -->
+      <div id="orientiug-presentation" class="orientiug-presentation">
+        <div class="presentation-content">
+          <p class="presentation-intro">
+            OrientIUG est votre assistant personnel pour vous guider dans le choix de votre parcours académique et professionnel.
+            Que vous soyez lycéen, étudiant ou en reconversion, nous vous aidons à explorer les filières, les débouchés et les réussites de ceux qui ont foulé les couloirs de l'IUG avant vous.
+          </p>
+
+          <h3>Ils ont réussi, et vous aussi !</h3>
+          <div class="success-stories">
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://www.univ-iug.com/assets/images/President.png" alt="Président de l'IUG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Président';">
+              </div>
+              <div class="story-text">
+                <strong>Steve Cédric DJAMBOU</strong>
+                <em>Président de l'IUG</em>
+                <p class="story-parcours">Diplômé de l'ESG, j'ai poursuivi avec un Master en Management, un Doctorat, et aujourd'hui je préside l'IUG. Mon parcours montre qu'avec de la détermination, tout est possible !</p>
+                <p class="story-quote">"L'IUG a été le tremplin de ma carrière. Chaque étudiant a le potentiel de devenir un leader. Je suis fier de guider la nouvelle génération vers la réussite."</p>
+              </div>
+            </div>
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://www.univ-iug.com/assets/images/tam.JPG" alt="Directeur de l'ESG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Directeur';">
+              </div>
+              <div class="story-text">
+                <strong>Dr. Tamnou</strong>
+                <em>Directeur de l'ESG</em>
+                <p class="story-parcours">Formé à l'ISTA, je suis devenu Ingénieur en Data Science, puis Directeur de l'ESG. La technologie est mon moteur, et l'IUG m'a donné les ailes pour innover.</p>
+                <p class="story-quote">"Les métiers du numérique évoluent vite, mais l'excellence de l'enseignement à l'IUG reste une constante. Rejoignez-nous pour écrire votre propre histoire."</p>
+              </div>
+            </div>
+            <!-- Troisième témoignage pour plus d'impact -->
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://via.placeholder.com/200?text=Ancien" alt="Ancien étudiant">
+              </div>
+              <div class="story-text">
+                <strong>Mabel Cédric Yvan</strong>
+                <em>Ancien étudiant de l'ISTA, aujourd'hui chef de projet en agro-industrie</em>
+                <p class="story-parcours">De l'ISTA à un poste de responsabilité dans une multinationale, mon parcours prouve que la formation de l'IUG ouvre des portes partout dans le monde.</p>
+                <p class="story-quote">"Grâce à l'IUG, j'ai acquis des compétences solides et un réseau précieux. Aujourd'hui, je contribue au développement durable à l'international."</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloc motivation -->
+          <div class="motivation-block">
+            <p class="motivation-text">
+              Le succès n'est pas un hasard, c'est une construction. À l'IUG, nous croyons en chaque talent. Que vous rêviez de management, de tech ou d'agronomie, vous avez les clés en main. Laissez OrientIUG vous aider à les tourner.
+            </p>
+            <p class="motivation-cta">Prêt à tracer votre route ?</p>
+          </div>
+
+          <div class="presentation-footer">
+            <button id="go-to-chat" class="btn-primary">Trouver ma voie <i class="fas fa-arrow-right"></i></button>
+          </div>
         </div>
       </div>
 
-      <p class="subtitle">Votre boîte à outils étudiante, réinventée.</p>
-      <div class="header-decoration"></div>
-    </header>
-
-    <!-- GRILLE DES PROJETS -->
-    <div class="projects-grid">
-      <!-- Carte BusEye -->
-      <div class="card" data-url="#">
-        <div class="card-badges">
-          <span class="badge popular">Populaire</span>
-        </div>
-        <div class="icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FF5714);">
-          <i class="fas fa-bus"></i>
-        </div>
-        <h2>BusEye</h2>
-        <p>Suivez les bus en temps réel, horaires et itinéraires.</p>
-        <div class="card-footer">
-          <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-          <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-            <i class="fas fa-play-circle"></i>
+      <!-- Interface de chat (cachée initialement) -->
+      <div id="orientiug-interface" class="orientiug-interface hidden">
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+              <div class="message-content">
+                Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.
+              </div>
+              <div class="message-footer">
+                <span class="message-timestamp"></span>
+              </div>
+            </div>
+          </div>
+          <!-- Indicateur de frappe (caché par défaut) -->
+          <div id="typing-indicator" class="typing-indicator hidden">
+            <span></span><span></span><span></span>
+          </div>
+          <!-- Bouton de défilement rapide (caché) -->
+          <button id="scroll-down-btn" class="scroll-down-btn hidden" aria-label="Descendre en bas">
+            <i class="fas fa-arrow-down"></i>
           </button>
+          <div class="chat-input-area">
+            <textarea id="chat-input" placeholder="Posez votre question..." rows="1"></textarea>
+            <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+          </div>
+          <div class="suggestions">
+            <button class="suggestion-btn">Quels sont les débouchés de la filière ESG ?</button>
+            <button class="suggestion-btn">Comment choisir entre ISTA et ISA ?</button>
+            <button class="suggestion-btn">Quelles sont les conditions d'admission ?</button>
+            <button class="suggestion-btn" id="start-quiz">🎯 Faire le quiz d'orientation</button>
+          </div>
         </div>
-        <div class="card-shine"></div>
-      </div>
-
-      <!-- Carte Banque d'Annales -->
-      <div class="card" data-url="#">
-        <div class="card-badges">
-          <span class="badge new">Nouveau</span>
-        </div>
-        <div class="icon-wrapper" style="background: linear-gradient(135deg, #4A90E2, #2C5F9A);">
-          <span class="emoji-icon">📚</span>
-        </div>
-        <h2>Banque d'Annales IUG</h2>
-        <p>Annales des examens, filtrage par matière.</p>
-        <div class="card-footer">
-          <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-          <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-            <i class="fas fa-play-circle"></i>
-          </button>
-        </div>
-        <div class="card-shine"></div>
-      </div>
-
-      <!-- Carte Cerise -->
-      <div class="card" data-url="#">
-        <div class="card-badges"></div>
-        <div class="icon-wrapper" style="background: linear-gradient(135deg, #E94E3A, #B33C2E);">
-          <span class="emoji-icon">🍒</span>
-        </div>
-        <h2>Cerise</h2>
-        <p>Assistante virtuelle pour la vie universitaire.</p>
-        <div class="card-footer">
-          <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-          <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-            <i class="fas fa-play-circle"></i>
-          </button>
-        </div>
-        <div class="card-shine"></div>
-      </div>
-
-      <!-- Carte OrientIUG -->
-      <div class="card" data-url="#">
-        <div class="card-badges"></div>
-        <div class="icon-wrapper" style="background: linear-gradient(135deg, #6C5B7B, #4A3A5A);">
-          <i class="fas fa-compass"></i>
-        </div>
-        <h2>OrientIUG</h2>
-        <p>Orientation personnalisée et conseils parcours.</p>
-        <div class="card-footer">
-          <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-          <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-            <i class="fas fa-play-circle"></i>
-          </button>
-        </div>
-        <div class="card-shine"></div>
       </div>
     </div>
 
-    <!-- SECTION RECOMMANDATIONS -->
-    <section class="recommendations">
-      <h2>Recommandé pour vous</h2>
-      <div class="rec-cards">
-        <div class="rec-card">
-          <i class="fas fa-graduation-cap"></i>
-          <span>Préparez vos partiels avec la Banque d'annales</span>
-        </div>
-        <div class="rec-card">
-          <i class="fas fa-map-signs"></i>
-          <span>Découvrez les parcours avec OrientIUG</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
+    <!-- FOOTER (commun) -->
     <footer>
       <div class="footer-links">
         <a href="#" id="aboutLink">À propos</a>
@@ -179,44 +275,42 @@
       <p>© 2025 • Tous droits réservés</p>
       <p class="contributeurs">🏆 Contributeurs du mois : Marie K., Jean K., Amadou D.</p>
     </footer>
+  </div>
 
-    <!-- ÉLÉMENTS FLOTTANTS -->
-    <button id="helpButton" class="help-float" aria-label="Aide">
-      <i class="fas fa-question"></i>
-    </button>
+  <!-- ÉLÉMENTS FLOTTANTS -->
+  <button id="helpButton" class="help-float" aria-label="Aide">
+    <i class="fas fa-question"></i>
+  </button>
 
-    <!-- Panneau d'accessibilité -->
-    <div id="accessibilityPanel" class="accessibility-panel hidden">
-      <h3>Accessibilité</h3>
-      <label>
-        Taille de police :
-        <select id="fontSize">
-          <option value="normal">Normale</option>
-          <option value="large">Grande</option>
-          <option value="xlarge">Très grande</option>
-        </select>
-      </label>
-      <label>
-        Contraste :
-        <select id="contrast">
-          <option value="normal">Normal</option>
-          <option value="high">Élevé</option>
-        </select>
-      </label>
-      <button id="closeAccessibility">Fermer</button>
+  <div id="accessibilityPanel" class="accessibility-panel hidden">
+    <h3>Accessibilité</h3>
+    <label>
+      Taille de police :
+      <select id="fontSize">
+        <option value="normal">Normale</option>
+        <option value="large">Grande</option>
+        <option value="xlarge">Très grande</option>
+      </select>
+    </label>
+    <label>
+      Contraste :
+      <select id="contrast">
+        <option value="normal">Normal</option>
+        <option value="high">Élevé</option>
+      </select>
+    </label>
+    <button id="closeAccessibility">Fermer</button>
+  </div>
+
+  <div id="surveyPopup" class="survey-popup hidden">
+    <p>Quel outil utilisez-vous le plus ?</p>
+    <div class="survey-options">
+      <button data-tool="buseye">BusEye</button>
+      <button data-tool="annales">Annales</button>
+      <button data-tool="cerise">Cerise</button>
+      <button data-tool="orient">OrientIUG</button>
     </div>
-
-    <!-- Pop-up de sondage -->
-    <div id="surveyPopup" class="survey-popup hidden">
-      <p>Quel outil utilisez-vous le plus ?</p>
-      <div class="survey-options">
-        <button data-tool="buseye">BusEye</button>
-        <button data-tool="annales">Annales</button>
-        <button data-tool="cerise">Cerise</button>
-        <button data-tool="orient">OrientIUG</button>
-      </div>
-      <button id="closeSurvey">Plus tard</button>
-    </div>
+    <button id="closeSurvey">Plus tard</button>
   </div>
 
   <!-- Modale de connexion -->
