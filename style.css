@@ -1384,3 +1384,179 @@ body.chat-active .help-float {
     font-size: 1.8rem;
   }
 }
+
+
+/* ===== OPTIMISATIONS MOBILES ===== */
+
+/* Pour les très petits écrans (moins de 400px) */
+@media (max-width: 400px) {
+    .hubar {
+        padding: 0.3rem 0.8rem;
+    }
+    .logo-area h1 {
+        font-size: 1.3rem;
+    }
+    .logo-area i {
+        font-size: 1.8rem;
+    }
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    .back-button {
+        width: 36px;
+        height: 36px;
+    }
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    .card {
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+    }
+    .card h2 {
+        font-size: 1.4rem;
+    }
+    .story-card {
+        padding: 1rem;
+    }
+    .story-avatar {
+        flex: 0 0 120px;
+        height: 120px;
+    }
+    .story-text strong {
+        font-size: 1.3rem;
+    }
+    .story-text em {
+        font-size: 0.9rem;
+    }
+    .btn-primary {
+        font-size: 1.2rem;
+        padding: 1rem 2rem;
+    }
+}
+
+/* Pour les mobiles standards (400px - 600px) */
+@media (min-width: 401px) and (max-width: 600px) {
+    .hubar {
+        padding: 0.5rem 1rem;
+    }
+    .logo-area h1 {
+        font-size: 1.5rem;
+    }
+    .logo-area i {
+        font-size: 2rem;
+    }
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+    .back-button {
+        width: 40px;
+        height: 40px;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .card h2 {
+        font-size: 1.6rem;
+    }
+    .story-avatar {
+        flex: 0 0 150px;
+        height: 150px;
+    }
+}
+
+/* Pour les grands mobiles / petites tablettes (600px - 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+    .logo-area h1 {
+        font-size: 1.7rem;
+    }
+    .logo-area i {
+        font-size: 2.2rem;
+    }
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    .card h2 {
+        font-size: 1.7rem;
+    }
+}
+
+/* Pour tous les écrans jusqu'à 768px */
+@media (max-width: 768px) {
+    .container {
+        padding: 80px 1rem 2rem;
+    }
+    .orientiug-chat-fullscreen {
+        padding-top: 60px; /* correspond à la hauteur de la Hubar */
+    }
+    .chat-fullscreen-messages {
+        padding-bottom: 10px;
+    }
+    .message-wrapper {
+        max-width: 85%;
+    }
+    .message-bubble {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+        padding-bottom: 1.5rem; /* espace pour le timestamp */
+    }
+    .message-time {
+        font-size: 0.55rem;
+        bottom: 3px;
+        right: 6px;
+    }
+    .chat-fullscreen-input-area {
+        padding: 0.5rem 0.8rem;
+    }
+    .attach-btn, .emoji-btn, .voice-btn, .send-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    #chat-fullscreen-input {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.5rem;
+    }
+    .chat-toolbar {
+        bottom: 70px;
+        padding: 0.8rem;
+        gap: 0.8rem;
+    }
+    .chat-toolbar button {
+        font-size: 0.75rem;
+    }
+    .chat-toolbar button i {
+        font-size: 1.3rem;
+    }
+}
+
+/* Pour les très grands écrans (au-dessus de 1200px) */
+@media (min-width: 1201px) {
+    .container {
+        max-width: 1400px;
+    }
+    .hubar {
+        max-width: 1400px;
+    }
+    .card {
+        max-width: 320px;
+    }
+    .story-avatar {
+        flex: 0 0 220px;
+        height: 220px;
+    }
+    .presentation-content {
+        padding: 3rem;
+    }
+}
+
+/* Pour les écrans très larges, on peut même étaler les cartes */
+@media (min-width: 1600px) {
+    .projects-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
