@@ -216,6 +216,11 @@ body.dark-theme .logo-area h1 {
     white-space: nowrap;
 }
 
+/* Classes pour le responsive */
+.desktop-only {
+    display: flex;
+}
+
 .burger {
     display: none; /* caché sur desktop */
 }
@@ -1226,42 +1231,40 @@ body.chat-active .help-float {
 
 /* ===== MEDIA QUERIES MOBILE ===== */
 @media (max-width: 768px) {
+    .desktop-only {
+        display: none !important; /* cache thème, langue, etc. sur mobile */
+    }
+    .burger {
+        display: flex; /* affiche le burger */
+    }
     .hubar {
         padding: 0.5rem;
     }
-
     .logo-area h1 {
         font-size: 1.5rem;
     }
-
     .subtitle {
         font-size: 1rem;
     }
-
     .projects-grid {
         gap: 1.5rem;
     }
-
     .card {
         max-width: 100%;
     }
-
     .rec-cards {
         flex-direction: column;
         align-items: center;
     }
-
     .footer-links {
         flex-direction: column;
         gap: 0.5rem;
     }
-
     .social-icons a {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
     }
-
     .help-float {
         width: 50px;
         height: 50px;
@@ -1269,51 +1272,42 @@ body.chat-active .help-float {
         bottom: 15px;
         right: 15px;
     }
-
     .accessibility-panel, .survey-popup {
         width: 90%;
         left: 5%;
         right: 5%;
         bottom: 80px;
     }
-
     .blur-top-gap {
         height: 10px;
     }
-
     .container {
         padding: 80px 1rem 2rem;
     }
-
     .success-stories {
         flex-direction: column;
     }
-
     .story-card {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
         padding: 1.5rem;
     }
-
     .story-avatar {
         flex: 0 0 150px;
         width: 150px;
         height: 150px;
         border-radius: 50%;
     }
-
     .story-quote {
         border-left: none;
         border-top: 4px solid #3a7ca5;
         padding-top: 1rem;
         padding-left: 0;
     }
-
     .orientiug-chat-fullscreen {
         padding-top: 60px; /* un peu moins sur mobile */
     }
-
     .message-wrapper {
         max-width: 85%;
     }
@@ -1323,11 +1317,9 @@ body.chat-active .help-float {
     .card h2 {
         font-size: 1.5rem;
     }
-
     .btn {
         padding: 0.7rem 1.2rem;
     }
-
     .video-tutoriel {
         font-size: 1.8rem;
     }
