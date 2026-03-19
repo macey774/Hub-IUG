@@ -1,0 +1,23 @@
+{
+  "name": "Hub IUG",
+  "short_name": "Hub IUG",
+  "description": "Plateforme centralisée des projets étudiants de l'Institut Universitaire du Golfe de Guinée",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f9fc",
+  "theme_color": "#3a7ca5",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192?text=Hub+IUG",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512?text=Hub+IUG",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
