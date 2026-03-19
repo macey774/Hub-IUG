@@ -8,7 +8,7 @@
     --text-secondary: #2c3e50;
     --shadow-color: rgba(0, 40, 80, 0.2);
     --glow-color: rgba(255, 255, 255, 0.8);
-    --header-bg: rgba(255,255,255,0.7);
+    --header-bg: rgba(255, 255, 255, 0.7);
     --footer-text: #3a5a7a;
     --badge-new: #27ae60;
     --badge-popular: #e67e22;
@@ -20,11 +20,11 @@ body.dark-theme {
     --bg-gradient-start: #1a2634;
     --bg-gradient-end: #0f1a24;
     --card-bg: rgba(30, 40, 50, 0.8);
-    --card-border: rgba(255,255,255,0.1);
+    --card-border: rgba(255, 255, 255, 0.1);
     --text-primary: #ecf0f1;
     --text-secondary: #bdc3c7;
-    --shadow-color: rgba(0,0,0,0.5);
-    --header-bg: rgba(0,0,0,0.7);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --header-bg: rgba(0, 0, 0, 0.7);
     --footer-text: #95a5a6;
 }
 
@@ -36,8 +36,12 @@ body.dark-theme {
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(145deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(
+        145deg,
+        var(--bg-gradient-start),
+        var(--bg-gradient-end)
+    );
     min-height: 100vh;
     color: var(--text-secondary);
     position: relative;
@@ -55,14 +59,22 @@ body::-webkit-scrollbar {
 
 /* Animation de fond */
 body::before {
-    content: '';
+    content: "";
     position: fixed;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.3) 0%, transparent 30%),
-                radial-gradient(circle at 30% 70%, rgba(100,150,255,0.2) 0%, transparent 40%);
+    background: radial-gradient(
+            circle at 70% 30%,
+            rgba(255, 255, 255, 0.3) 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 30% 70%,
+            rgba(100, 150, 255, 0.2) 0%,
+            transparent 40%
+        );
     animation: rotate 30s linear infinite;
     z-index: -1;
     opacity: 0.5;
@@ -74,8 +86,12 @@ body.dark-theme::before {
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .container {
@@ -113,7 +129,7 @@ body.dark-theme::before {
     background: var(--header-bg);
     backdrop-filter: blur(8px);
     border-radius: 60px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     display: flex;
     justify-content: space-between;
@@ -133,13 +149,13 @@ body.dark-theme::before {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(128,128,128,0.2);
+    background: rgba(128, 128, 128, 0.2);
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .back-button:hover {
-    background: rgba(128,128,128,0.4);
+    background: rgba(128, 128, 128, 0.4);
 }
 
 .back-button i {
@@ -181,7 +197,8 @@ body.dark-theme .logo-area h1 {
     align-items: center;
 }
 
-.hub-actions, .chat-actions {
+.hub-actions,
+.chat-actions {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -204,14 +221,14 @@ body.dark-theme .logo-area h1 {
 }
 
 .icon-btn:hover {
-    background: rgba(128,128,128,0.2);
+    background: rgba(128, 128, 128, 0.2);
 }
 
 .icon-btn.text-btn {
     width: auto;
     padding: 0 1rem;
     font-size: 1rem;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 40px;
     white-space: nowrap;
 }
@@ -237,7 +254,7 @@ body.dark-theme .logo-area h1 {
     backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 1rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     z-index: 1001;
 }
 
@@ -261,7 +278,7 @@ body.dark-theme .logo-area h1 {
 }
 
 .mobile-menu a:hover {
-    background: rgba(58,124,165,0.2);
+    background: rgba(58, 124, 165, 0.2);
 }
 
 .hidden {
@@ -270,7 +287,7 @@ body.dark-theme .logo-area h1 {
 
 /* ===== HUB ===== */
 .news-ticker {
-    background: rgba(58,124,165,0.2);
+    background: rgba(58, 124, 165, 0.2);
     backdrop-filter: blur(4px);
     padding: 0.5rem 0;
     overflow: hidden;
@@ -291,8 +308,12 @@ body.dark-theme .logo-area h1 {
 }
 
 @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .subtitle {
@@ -343,10 +364,18 @@ body.dark-theme .logo-area h1 {
     animation: cardAppear 0.6s ease backwards;
 }
 
-.card:nth-child(1) { animation-delay: 0.1s; }
-.card:nth-child(2) { animation-delay: 0.2s; }
-.card:nth-child(3) { animation-delay: 0.3s; }
-.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.card:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 @keyframes cardAppear {
     from {
@@ -361,8 +390,8 @@ body.dark-theme .logo-area h1 {
 
 .card:hover {
     transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 40px 70px -15px rgba(0,0,0,0.3);
-    border-color: rgba(255,255,255,0.9);
+    box-shadow: 0 40px 70px -15px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.9);
 }
 
 .card-badges {
@@ -398,7 +427,11 @@ body.dark-theme .logo-area h1 {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.8) 0%, transparent 50%);
+    background: radial-gradient(
+        circle at 70% 30%,
+        rgba(255, 255, 255, 0.8) 0%,
+        transparent 50%
+    );
     opacity: 0;
     transition: opacity 0.6s ease;
     pointer-events: none;
@@ -416,21 +449,23 @@ body.dark-theme .logo-area h1 {
     align-items: center;
     justify-content: center;
     margin-bottom: 1.2rem;
-    box-shadow: 0 15px 25px rgba(0,0,0,0.2), 0 0 0 2px rgba(255,255,255,0.3) inset;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(255, 255, 255, 0.3) inset;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
 }
 
 .card:hover .icon-wrapper {
     transform: scale(1.1) rotate(2deg);
-    box-shadow: 0 20px 35px rgba(0,0,0,0.3), 0 0 0 4px rgba(255,255,255,0.5) inset;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3),
+        0 0 0 4px rgba(255, 255, 255, 0.5) inset;
 }
 
 .icon-wrapper i,
 .emoji-icon {
     font-size: 3rem;
     color: white;
-    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
 }
 
 .emoji-icon {
@@ -484,20 +519,25 @@ body.dark-theme .card h2 {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
     z-index: 1;
 }
 
 .btn::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     transition: left 0.6s ease;
     z-index: -1;
 }
@@ -565,7 +605,7 @@ body.dark-theme .card h2 {
     gap: 1rem;
     font-weight: 500;
     color: var(--text-primary);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
 .rec-card i {
@@ -613,7 +653,7 @@ body.dark-theme .card h2 {
     display: flex;
     align-items: center;
     gap: 2rem;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 30px;
     padding: 2rem;
     transition: transform 0.3s;
@@ -629,7 +669,7 @@ body.dark-theme .card h2 {
     border-radius: 20px;
     overflow: hidden;
     border: 4px solid #3a7ca5;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .story-avatar img {
@@ -677,7 +717,7 @@ body.dark-theme .card h2 {
     text-align: center;
     margin: 2.5rem 0;
     padding: 2rem;
-    background: rgba(58,124,165,0.1);
+    background: rgba(58, 124, 165, 0.1);
     border-radius: 40px;
 }
 
@@ -755,7 +795,7 @@ body.dark-theme .card h2 {
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
-    background: rgba(128,128,128,0.1);
+    background: rgba(128, 128, 128, 0.1);
     padding: 0.3rem 1rem;
     border-radius: 20px;
     align-self: center;
@@ -804,11 +844,11 @@ body.dark-theme .card h2 {
     bottom: 4px;
     right: 8px;
     font-size: 0.6rem;
-    color: rgba(0,0,0,0.5);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .message-wrapper.user .message-time {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Zone de saisie */
@@ -818,7 +858,7 @@ body.dark-theme .card h2 {
     padding: 0.5rem 1rem;
     background: var(--header-bg);
     backdrop-filter: blur(8px);
-    border-top: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     gap: 0.5rem;
 }
 
@@ -837,17 +877,17 @@ body.dark-theme .card h2 {
 }
 
 .attach-btn:hover {
-    background: rgba(128,128,128,0.2);
+    background: rgba(128, 128, 128, 0.2);
 }
 
 .input-wrapper {
     flex: 1;
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 30px;
     padding: 0.2rem 0.5rem;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #chat-fullscreen-input {
@@ -860,7 +900,8 @@ body.dark-theme .card h2 {
     outline: none;
 }
 
-.emoji-btn, .voice-btn {
+.emoji-btn,
+.voice-btn {
     background: none;
     border: none;
     font-size: 1.3rem;
@@ -874,8 +915,9 @@ body.dark-theme .card h2 {
     justify-content: center;
 }
 
-.emoji-btn:hover, .voice-btn:hover {
-    background: rgba(128,128,128,0.2);
+.emoji-btn:hover,
+.voice-btn:hover {
+    background: rgba(128, 128, 128, 0.2);
 }
 
 .send-btn {
@@ -911,7 +953,7 @@ body.dark-theme .card h2 {
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     z-index: 10;
 }
 
@@ -935,7 +977,7 @@ body.dark-theme .card h2 {
 }
 
 .chat-toolbar button:hover {
-    background: rgba(128,128,128,0.2);
+    background: rgba(128, 128, 128, 0.2);
 }
 
 /* Mode sombre pour le chat */
@@ -945,8 +987,8 @@ body.dark-theme .message-wrapper.bot .message-bubble {
 }
 
 body.dark-theme .input-wrapper {
-    background: rgba(0,0,0,0.3);
-    border-color: rgba(255,255,255,0.1);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 body.dark-theme #chat-fullscreen-input::placeholder {
@@ -955,7 +997,7 @@ body.dark-theme #chat-fullscreen-input::placeholder {
 }
 
 body.dark-theme .message-time {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Masquer le footer et le bouton aide dans le chat fullscreen */
@@ -966,8 +1008,14 @@ body.chat-active .help-float {
 
 /* Animation */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== FOOTER ===== */
@@ -975,7 +1023,7 @@ body.chat-active .help-float {
     text-align: center;
     margin-top: 4rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(58,124,165,0.2);
+    border-top: 1px solid rgba(58, 124, 165, 0.2);
 }
 
 .footer-links {
@@ -1013,12 +1061,12 @@ body.chat-active .help-float {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(58,124,165,0.1);
+    background: rgba(58, 124, 165, 0.1);
     transition: background 0.2s;
 }
 
 .social-icons a:hover {
-    background: rgba(58,124,165,0.3);
+    background: rgba(58, 124, 165, 0.3);
 }
 
 .ecoles {
@@ -1074,7 +1122,7 @@ body.chat-active .help-float {
     border: none;
     font-size: 2rem;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     z-index: 100;
     display: flex;
     align-items: center;
@@ -1097,7 +1145,7 @@ body.chat-active .help-float {
     border-radius: 20px;
     padding: 1.5rem;
     width: 250px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 101;
 }
 
@@ -1141,7 +1189,7 @@ body.chat-active .help-float {
     border-radius: 20px;
     padding: 1.5rem;
     width: 260px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 101;
 }
 
@@ -1185,8 +1233,11 @@ body.chat-active .help-float {
 /* ===== MODALE ===== */
 .modal {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -1232,39 +1283,47 @@ body.chat-active .help-float {
 /* ===== MEDIA QUERIES MOBILE ===== */
 @media (max-width: 768px) {
     .desktop-only {
-        display: none !important; /* cache thème, langue, etc. sur mobile */
+        display: none !important;
     }
     .burger {
-        display: flex; /* affiche le burger */
+        display: flex;
     }
     .hubar {
         padding: 0.5rem;
     }
+
     .logo-area h1 {
         font-size: 1.5rem;
     }
+
     .subtitle {
         font-size: 1rem;
     }
+
     .projects-grid {
         gap: 1.5rem;
     }
+
     .card {
         max-width: 100%;
     }
+
     .rec-cards {
         flex-direction: column;
         align-items: center;
     }
+
     .footer-links {
         flex-direction: column;
         gap: 0.5rem;
     }
+
     .social-icons a {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
     }
+
     .help-float {
         width: 50px;
         height: 50px;
@@ -1272,42 +1331,52 @@ body.chat-active .help-float {
         bottom: 15px;
         right: 15px;
     }
-    .accessibility-panel, .survey-popup {
+
+    .accessibility-panel,
+    .survey-popup {
         width: 90%;
         left: 5%;
         right: 5%;
         bottom: 80px;
     }
+
     .blur-top-gap {
         height: 10px;
     }
+
     .container {
         padding: 80px 1rem 2rem;
     }
+
     .success-stories {
         flex-direction: column;
     }
+
     .story-card {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
         padding: 1.5rem;
     }
+
     .story-avatar {
         flex: 0 0 150px;
         width: 150px;
         height: 150px;
         border-radius: 50%;
     }
+
     .story-quote {
         border-left: none;
         border-top: 4px solid #3a7ca5;
         padding-top: 1rem;
         padding-left: 0;
     }
+
     .orientiug-chat-fullscreen {
         padding-top: 60px; /* un peu moins sur mobile */
     }
+
     .message-wrapper {
         max-width: 85%;
     }
@@ -1317,38 +1386,190 @@ body.chat-active .help-float {
     .card h2 {
         font-size: 1.5rem;
     }
+
     .btn {
         padding: 0.7rem 1.2rem;
     }
+
     .video-tutoriel {
         font-size: 1.8rem;
     }
 }
 
-/* Optimisation pour très petits écrans */
-@media (max-width: 360px) {
+/* ===== OPTIMISATIONS MOBILES ===== */
+
+/* Pour les très petits écrans (moins de 400px) */
+@media (max-width: 400px) {
     .hubar {
-        padding: 0.3rem;
+        padding: 0.3rem 0.8rem;
     }
     .logo-area h1 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+    }
+    .logo-area i {
+        font-size: 1.8rem;
     }
     .icon-btn {
         width: 36px;
         height: 36px;
         font-size: 1.2rem;
     }
+    .back-button {
+        width: 36px;
+        height: 36px;
+    }
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    .card {
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+    }
     .card h2 {
+        font-size: 1.4rem;
+    }
+    .story-card {
+        padding: 1rem;
+    }
+    .story-avatar {
+        flex: 0 0 120px;
+        height: 120px;
+    }
+    .story-text strong {
         font-size: 1.3rem;
     }
-    .btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.85rem;
+    .story-text em {
+        font-size: 0.9rem;
     }
-    .chat-fullscreen-input-area {
-        padding: 0.3rem;
+    .btn-primary {
+        font-size: 1.2rem;
+        padding: 1rem 2rem;
+    }
+}
+
+/* Pour les mobiles standards (400px - 600px) */
+@media (min-width: 401px) and (max-width: 600px) {
+    .hubar {
+        padding: 0.5rem 1rem;
+    }
+    .logo-area h1 {
+        font-size: 1.5rem;
+    }
+    .logo-area i {
+        font-size: 2rem;
+    }
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+    .back-button {
+        width: 40px;
+        height: 40px;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .card h2 {
+        font-size: 1.6rem;
+    }
+    .story-avatar {
+        flex: 0 0 150px;
+        height: 150px;
+    }
+}
+
+/* Pour les grands mobiles / petites tablettes (600px - 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+    .logo-area h1 {
+        font-size: 1.7rem;
+    }
+    .logo-area i {
+        font-size: 2.2rem;
+    }
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    .card h2 {
+        font-size: 1.7rem;
+    }
+}
+
+/* Pour tous les écrans jusqu'à 768px */
+@media (max-width: 768px) {
+    .container {
+        padding: 80px 1rem 2rem;
+    }
+    .orientiug-chat-fullscreen {
+        padding-top: 60px; /* correspond à la hauteur de la Hubar */
+    }
+    .chat-fullscreen-messages {
+        padding-bottom: 10px;
     }
     .message-wrapper {
-        max-width: 90%;
+        max-width: 85%;
+    }
+    .message-bubble {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+        padding-bottom: 1.5rem; /* espace pour le timestamp */
+    }
+    .message-time {
+        font-size: 0.55rem;
+        bottom: 3px;
+        right: 6px;
+    }
+    .chat-fullscreen-input-area {
+        padding: 0.5rem 0.8rem;
+    }
+    .attach-btn,
+    .emoji-btn,
+    .voice-btn,
+    .send-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    #chat-fullscreen-input {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.5rem;
+    }
+    .chat-toolbar {
+        bottom: 70px;
+        padding: 0.8rem;
+        gap: 0.8rem;
+    }
+    .chat-toolbar button {
+        font-size: 0.75rem;
+    }
+    .chat-toolbar button i {
+        font-size: 1.3rem;
+    }
+}
+
+/* Pour les très grands écrans (au-dessus de 1200px) */
+@media (min-width: 1201px) {
+    .container {
+        max-width: 1400px;
+    }
+    .hubar {
+        max-width: 1400px;
+    }
+    .card {
+        max-width: 320px;
+    }
+    .story-avatar {
+        flex: 0 0 220px;
+        height: 220px;
+    }
+    .presentation-content {
+        padding: 3rem;
+    }
+}
+
+/* Pour les écrans très larges, on peut même étaler les cartes */
+@media (min-width: 1600px) {
+    .projects-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
