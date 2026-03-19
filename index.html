@@ -17,26 +17,46 @@
   <!-- Bande floutée de 10px en haut -->
   <div class="blur-top-gap"></div>
 
-  <!-- BARRE FIXE COMMUNE -->
-  <div class="header-top">
-    <div class="logo-area" id="header-logo">
+  <!-- HUBAR (barre fixe) -->
+  <div class="hubar">
+    <div class="hubar-left">
       <span id="back-button" class="back-button hidden"><i class="fas fa-arrow-left"></i></span>
-      <i class="fas fa-cubes" id="header-icon"></i>
-      <h1 id="header-title">Hub IUG</h1>
+      <div class="logo-area" id="header-logo">
+        <i class="fas fa-cubes" id="header-icon"></i>
+        <h1 id="header-title">Hub IUG</h1>
+      </div>
     </div>
-    <div class="header-actions">
-      <button id="themeToggle" class="icon-btn desktop-only" aria-label="Changer de thème">
-        <i class="fas fa-sun"></i>
-      </button>
-      <button id="langToggle" class="icon-btn desktop-only" aria-label="Changer de langue">
-        <i class="fas fa-language"></i>
-      </button>
-      <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
-        <i class="fas fa-user-circle"></i>
-      </button>
-      <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
-        <i class="fas fa-bars"></i>
-      </button>
+    <div class="hubar-right">
+      <!-- Actions du hub (visibles par défaut) -->
+      <div id="hub-actions" class="hub-actions">
+        <button id="themeToggle" class="icon-btn" aria-label="Changer de thème">
+          <i class="fas fa-sun"></i>
+        </button>
+        <button id="langToggle" class="icon-btn" aria-label="Changer de langue">
+          <i class="fas fa-language"></i>
+        </button>
+        <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
+          <i class="fas fa-user-circle"></i>
+        </button>
+        <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <!-- Actions du chat (cachées par défaut) -->
+      <div id="chat-actions" class="chat-actions hidden">
+        <button id="voice-call-btn" class="icon-btn" aria-label="Appel vocal">
+          <i class="fas fa-phone"></i>
+        </button>
+        <button id="three-dots-btn" class="icon-btn" aria-label="Menu">
+          <i class="fas fa-ellipsis-vertical"></i>
+        </button>
+        <button id="loginBtnChat" class="icon-btn" aria-label="Se connecter">
+          <i class="fas fa-user-circle"></i>
+        </button>
+        <button id="menuToggleChat" class="icon-btn burger" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -163,8 +183,7 @@
       <div id="orientiug-presentation" class="orientiug-presentation">
         <div class="presentation-content">
           <p class="presentation-intro">
-            OrientIUG est votre assistant personnel pour vous guider dans le choix de votre parcours académique et professionnel.
-            Que vous soyez lycéen, étudiant ou en reconversion, nous vous aidons à explorer les filières, les débouchés et les réussites de ceux qui ont foulé les couloirs de l'IUG avant vous.
+            OrientIUG, votre boussole pour un avenir brillant. Que vous soyez en quête de sens, de débouchés ou d'inspiration, notre assistant vous éclaire sur les parcours qui ont fait leurs preuves. Découvrez les success stories de ceux qui ont marqué l'IUG et laissez-vous guider vers votre propre voie.
           </p>
 
           <h3>Ils ont réussi, et vous aussi !</h3>
@@ -191,21 +210,20 @@
                 <p class="story-quote">"Les métiers du numérique évoluent vite, mais l'excellence de l'enseignement à l'IUG reste une constante. Rejoignez-nous pour écrire votre propre histoire."</p>
               </div>
             </div>
-            <!-- Troisième témoignage pour plus d'impact -->
+            <!-- Troisième témoignage -->
             <div class="story-card">
               <div class="story-avatar">
                 <img src="https://via.placeholder.com/200?text=Ancien" alt="Ancien étudiant">
               </div>
               <div class="story-text">
-                <strong>Mabel Cédric Yvan</strong>
-                <em>Ancien étudiant de l'ISTA, aujourd'hui chef de projet en agro-industrie</em>
-                <p class="story-parcours">De l'ISTA à un poste de responsabilité dans une multinationale, mon parcours prouve que la formation de l'IUG ouvre des portes partout dans le monde.</p>
+                <strong>Marie-Claire Koffi</strong>
+                <em>Ancienne étudiante de l'ISA, aujourd'hui chef de projet en agro-industrie</em>
+                <p class="story-parcours">De l'ISA à un poste de responsabilité dans une multinationale, mon parcours prouve que la formation de l'IUG ouvre des portes partout dans le monde.</p>
                 <p class="story-quote">"Grâce à l'IUG, j'ai acquis des compétences solides et un réseau précieux. Aujourd'hui, je contribue au développement durable à l'international."</p>
               </div>
             </div>
           </div>
 
-          <!-- Bloc motivation -->
           <div class="motivation-block">
             <p class="motivation-text">
               Le succès n'est pas un hasard, c'est une construction. À l'IUG, nous croyons en chaque talent. Que vous rêviez de management, de tech ou d'agronomie, vous avez les clés en main. Laissez OrientIUG vous aider à les tourner.
@@ -214,48 +232,44 @@
           </div>
 
           <div class="presentation-footer">
-            <button id="go-to-chat" class="btn-primary">Trouver ma voie <i class="fas fa-arrow-right"></i></button>
+            <button id="go-to-chat" class="btn-primary">Trouver ma voix <i class="fas fa-arrow-right"></i></button>
           </div>
         </div>
       </div>
 
-      <!-- Interface de chat (cachée initialement) -->
-      <div id="orientiug-interface" class="orientiug-interface hidden">
-        <div class="chat-container">
-          <div class="chat-messages" id="chat-messages">
-            <div class="message bot-message">
-              <div class="message-content">
-                Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.
-              </div>
-              <div class="message-footer">
-                <span class="message-timestamp"></span>
-              </div>
+      <!-- Interface de chat plein écran (WhatsApp-like) -->
+      <div id="orientiug-chat-fullscreen" class="orientiug-chat-fullscreen hidden">
+        <div class="chat-fullscreen-messages" id="chat-fullscreen-messages">
+          <!-- Les messages seront injectés ici -->
+          <div class="message-wrapper bot">
+            <div class="message-bubble">
+              Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.
             </div>
+            <div class="message-time">10:00</div>
           </div>
-          <!-- Indicateur de frappe (caché par défaut) -->
-          <div id="typing-indicator" class="typing-indicator hidden">
-            <span></span><span></span><span></span>
+        </div>
+        <div class="chat-fullscreen-input-area">
+          <button class="attach-btn" id="attach-btn"><i class="fas fa-plus"></i></button>
+          <div class="input-wrapper">
+            <input type="text" id="chat-fullscreen-input" placeholder="Écrire un message...">
+            <button class="emoji-btn" id="emoji-btn"><i class="fas fa-smile"></i></button>
+            <button class="voice-btn" id="voice-btn"><i class="fas fa-microphone"></i></button>
           </div>
-          <!-- Bouton de défilement rapide (caché) -->
-          <button id="scroll-down-btn" class="scroll-down-btn hidden" aria-label="Descendre en bas">
-            <i class="fas fa-arrow-down"></i>
-          </button>
-          <div class="chat-input-area">
-            <textarea id="chat-input" placeholder="Posez votre question..." rows="1"></textarea>
-            <button id="send-message"><i class="fas fa-paper-plane"></i></button>
-          </div>
-          <div class="suggestions">
-            <button class="suggestion-btn">Quels sont les débouchés de la filière ESG ?</button>
-            <button class="suggestion-btn">Comment choisir entre ISTA et ISA ?</button>
-            <button class="suggestion-btn">Quelles sont les conditions d'admission ?</button>
-            <button class="suggestion-btn" id="start-quiz">🎯 Faire le quiz d'orientation</button>
-          </div>
+          <button class="send-btn" id="send-fullscreen-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <!-- Barre d'outils supplémentaire (cachée par défaut) -->
+        <div class="chat-toolbar hidden" id="chat-toolbar">
+          <button><i class="fas fa-image"></i> Galerie</button>
+          <button><i class="fas fa-camera"></i> Appareil photo</button>
+          <button><i class="fas fa-file"></i> Document</button>
+          <button><i class="fas fa-location-dot"></i> Localisation</button>
+          <button><i class="fas fa-user"></i> Contact</button>
         </div>
       </div>
     </div>
 
     <!-- FOOTER (commun) -->
-    <footer>
+    <footer id="main-footer">
       <div class="footer-links">
         <a href="#" id="aboutLink">À propos</a>
         <a href="#" id="faqLink">FAQ / Aide</a>
@@ -277,7 +291,7 @@
     </footer>
   </div>
 
-  <!-- ÉLÉMENTS FLOTTANTS -->
+  <!-- ÉLÉMENTS FLOTTANTS (communs) -->
   <button id="helpButton" class="help-float" aria-label="Aide">
     <i class="fas fa-question"></i>
   </button>
