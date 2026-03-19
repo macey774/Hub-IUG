@@ -1,13 +1,21 @@
 // ===== GESTION DU MENU BURGER =====
 const menuToggle = document.getElementById("menuToggle");
+const menuToggleChat = document.getElementById("menuToggleChat");
 const mobileMenu = document.getElementById("mobileMenu");
 
-menuToggle.addEventListener("click", () => {
+function toggleMobileMenu() {
   mobileMenu.classList.toggle("hidden");
-});
+}
+
+menuToggle.addEventListener("click", toggleMobileMenu);
+menuToggleChat.addEventListener("click", toggleMobileMenu);
 
 document.addEventListener("click", (e) => {
-  if (!menuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+  if (
+    !menuToggle.contains(e.target) &&
+    !menuToggleChat.contains(e.target) &&
+    !mobileMenu.contains(e.target)
+  ) {
     mobileMenu.classList.add("hidden");
   }
 });
@@ -61,8 +69,9 @@ langToggles.forEach((toggle) => {
 });
 
 // ===== GESTION DE LA CONNEXION =====
-const loginBtn = document.getElementById("loginBtn");
-const mobileLogin = document.getElementById("mobileLogin");
+const loginBtns = document.querySelectorAll(
+  "#loginBtn, #loginBtnChat, #mobileLogin"
+);
 const loginModal = document.getElementById("loginModal");
 const loginClose = document.getElementById("loginClose");
 const loginSubmit = document.getElementById("loginSubmit");
@@ -71,11 +80,12 @@ function openLoginModal() {
   loginModal.classList.remove("hidden");
 }
 
-loginBtn.addEventListener("click", openLoginModal);
-mobileLogin.addEventListener("click", (e) => {
-  e.preventDefault();
-  openLoginModal();
-  mobileMenu.classList.add("hidden");
+loginBtns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    openLoginModal();
+    mobileMenu.classList.add("hidden");
+  });
 });
 
 loginClose.addEventListener("click", () => {
@@ -85,8 +95,11 @@ loginClose.addEventListener("click", () => {
 loginSubmit.addEventListener("click", () => {
   alert("Connexion simulée !");
   loginModal.classList.add("hidden");
-  loginBtn.innerHTML = '<i class="fas fa-user-circle"></i> Bonjour, Étudiant';
-  loginBtn.classList.add("text-btn");
+  // Mettre à jour les boutons de connexion
+  loginBtns.forEach((btn) => {
+    btn.innerHTML = '<i class="fas fa-user-circle"></i> Bonjour, Étudiant';
+    btn.classList.add("text-btn");
+  });
 });
 
 // ===== GESTION DU SONDAGE =====
@@ -206,29 +219,50 @@ const orientiugAccessBtn = document.getElementById("orientiug-access");
 const hubSection = document.getElementById("hub-section");
 const orientiugSection = document.getElementById("orientiug-section");
 const presentationDiv = document.getElementById("orientiug-presentation");
-const chatDiv = document.getElementById("orientiug-interface");
+const chatFullscreen = document.getElementById("orientiug-chat-fullscreen");
 const goToChatBtn = document.getElementById("go-to-chat");
 const backButton = document.getElementById("back-button");
 const headerIcon = document.getElementById("header-icon");
 const headerTitle = document.getElementById("header-title");
 const logoArea = document.querySelector(".logo-area");
+const footer = document.getElementById("main-footer");
+const hubActions = document.getElementById("hub-actions");
+const chatActions = document.getElementById("chat-actions");
 
 function enterOrientIUG() {
+  window.scrollTo(0, 0);
   hubSection.classList.add("hidden");
   orientiugSection.classList.remove("hidden");
   presentationDiv.classList.remove("hidden");
-  chatDiv.classList.add("hidden");
+  chatFullscreen.classList.add("hidden");
+  // Mise à jour de la Hubar
   headerIcon.className = "fas fa-compass";
   headerTitle.textContent = "OrientIUG";
   backButton.classList.remove("hidden");
+  hubActions.classList.add("hidden");
+  chatActions.classList.remove("hidden");
+  document.body.classList.remove("chat-active"); // pas encore en chat
 }
 
 function returnToHub() {
+  window.scrollTo(0, 0);
   hubSection.classList.remove("hidden");
   orientiugSection.classList.add("hidden");
   headerIcon.className = "fas fa-cubes";
   headerTitle.textContent = "Hub IUG";
   backButton.classList.add("hidden");
+  hubActions.classList.remove("hidden");
+  chatActions.classList.add("hidden");
+  document.body.classList.remove("chat-active");
+}
+
+function showChatFullscreen() {
+  window.scrollTo(0, 0);
+  presentationDiv.classList.add("hidden");
+  chatFullscreen.classList.remove("hidden");
+  document.body.classList.add("chat-active"); // pour masquer le footer et le bouton aide
+  // Charger l'historique des messages
+  loadChatMessages();
 }
 
 orientiugAccessBtn.addEventListener("click", (e) => {
@@ -241,212 +275,139 @@ orientiugCard.addEventListener("click", (e) => {
   enterOrientIUG();
 });
 
-goToChatBtn.addEventListener("click", () => {
-  presentationDiv.classList.add("hidden");
-  chatDiv.classList.remove("hidden");
-  // Charger l'historique quand on ouvre le chat
-  loadChatHistory();
+goToChatBtn.addEventListener("click", showChatFullscreen);
+
+// Le bouton retour dans la Hubar (flèche) : en chat, retour direct au hub
+backButton.addEventListener("click", () => {
+  if (!chatFullscreen.classList.contains("hidden")) {
+    // Si on est dans le chat, retour au hub directement
+    returnToHub();
+  } else if (!presentationDiv.classList.contains("hidden")) {
+    // Si on est dans la présentation, retour au hub aussi (cohérent)
+    returnToHub();
+  } else {
+    // Sinon, retour au hub par défaut
+    returnToHub();
+  }
 });
 
-backButton.addEventListener("click", returnToHub);
-
+// Le logo permet aussi de revenir au hub
 logoArea.addEventListener("click", (e) => {
   if (e.target.closest(".back-button")) return;
-  if (!hubSection.classList.contains("hidden")) return;
+  if (!hubSection.classList.contains("hidden")) return; // déjà dans le hub
   returnToHub();
 });
 
-// ===== FONCTIONNALITÉS DU CHAT =====
-const chatMessages = document.getElementById("chat-messages");
-const chatInput = document.getElementById("chat-input");
-const sendButton = document.getElementById("send-message");
-const suggestionBtns = document.querySelectorAll(
-  ".suggestion-btn:not(#start-quiz)"
-);
-const startQuizBtn = document.getElementById("start-quiz");
-const typingIndicator = document.getElementById("typing-indicator");
-const scrollDownBtn = document.getElementById("scroll-down-btn");
+// ===== GESTION DU CHAT FULLSCREEN =====
+const chatMessages = document.getElementById("chat-fullscreen-messages");
+const chatInput = document.getElementById("chat-fullscreen-input");
+const sendBtn = document.getElementById("send-fullscreen-btn");
+const attachBtn = document.getElementById("attach-btn");
+const emojiBtn = document.getElementById("emoji-btn");
+const voiceBtn = document.getElementById("voice-btn");
+const toolbar = document.getElementById("chat-toolbar");
+const voiceCallBtn = document.getElementById("voice-call-btn");
+const threeDotsBtn = document.getElementById("three-dots-btn");
 
-// Variables pour le quiz
-let quizActive = false;
-let quizStep = 0;
-const quizQuestions = [
-  {
-    question: "Quel domaine vous attire le plus ?",
-    options: [
-      "Gestion / Commerce",
-      "Informatique / Tech",
-      "Sciences / Environnement",
-      "Je ne sais pas encore"
-    ]
-  },
-  {
-    question: "Préférez-vous travailler plutôt en équipe ou en autonomie ?",
-    options: ["En équipe", "En autonomie", "Les deux"]
-  },
-  {
-    question: "Aimez-vous les chiffres et l'analyse ?",
-    options: ["Oui, beaucoup", "Un peu", "Pas du tout"]
-  }
-];
-const quizRecommendations = {
-  "Gestion / Commerce": "La filière ESG est faite pour vous !",
-  "Informatique / Tech":
-    "Rejoignez l'ISTA pour une carrière dans le numérique.",
-  "Sciences / Environnement":
-    "L'ISA vous ouvrira les portes de l'agronomie et du développement durable.",
-  "Je ne sais pas encore":
-    "Pas d'inquiétude ! Venez échanger avec nos conseillers."
-};
-
-// Badges
+// Variables pour les messages et dates
+let messages = [];
 let messageCount = parseInt(localStorage.getItem("messageCount")) || 0;
-const badgeThresholds = [5, 20, 50];
-const badgeMessages = {
-  5: "🎉 Félicitations ! Vous avez posé 5 questions. Badge 'Curieux' débloqué !",
-  20: "🏆 Incroyable ! 20 questions ! Vous êtes un 'Explorateur' !",
-  50: "🌟 50 questions ! Vous méritez le badge 'Légende' !"
-};
 
-// Mise en évidence des mots-clés
-function highlightKeywords(text) {
-  const keywords = [
-    "débouchés",
-    "admission",
-    "esg",
-    "ista",
-    "isa",
-    "informatique",
-    "gestion",
-    "agronomie"
-  ];
-  let newText = text;
-  keywords.forEach((keyword) => {
-    const regex = new RegExp(`\\b(${keyword})\\b`, "gi");
-    newText = newText.replace(
-      regex,
-      `<span class="highlight-keyword" title="En savoir plus sur ${keyword}">$1</span>`
-    );
-  });
-  return newText;
+// Fonction pour formater une date en label (Aujourd'hui, Hier, etc.)
+function getDateLabel(date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const msgDate = new Date(date);
+  msgDate.setHours(0, 0, 0, 0);
+
+  if (msgDate.getTime() === today.getTime()) {
+    return "Aujourd'hui";
+  } else if (msgDate.getTime() === yesterday.getTime()) {
+    return "Hier";
+  } else {
+    const diffDays = Math.round((today - msgDate) / (1000 * 60 * 60 * 24));
+    if (diffDays < 7 && diffDays > 0) {
+      // Nom du jour
+      return new Date(date).toLocaleDateString("fr-FR", { weekday: "long" });
+    } else {
+      // Date complète
+      return new Date(date).toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+    }
+  }
 }
 
-// Ajouter un message avec horodatage et évaluation
-function addMessage(text, isUser = false, timestamp = null, save = true) {
-  const messageDiv = document.createElement("div");
-  messageDiv.classList.add("message");
-  messageDiv.classList.add(isUser ? "user-message" : "bot-message");
-
-  const contentDiv = document.createElement("div");
-  contentDiv.classList.add("message-content");
-  // Mise en évidence des mots-clés pour les réponses du bot
-  if (!isUser) {
-    text = highlightKeywords(text);
+// Ajouter un séparateur de date si nécessaire (comparaison avec le dernier message)
+function addDateSeparator(date, force = false) {
+  const lastSeparator = chatMessages.querySelector(
+    ".date-separator:last-child"
+  );
+  const lastMessage = chatMessages.querySelector(".message-wrapper:last-child");
+  let lastDate = null;
+  if (lastMessage) {
+    // Récupérer la date depuis l'attribut data-date du dernier message
+    const lastMsgDate = lastMessage.dataset.date;
+    if (lastMsgDate) {
+      lastDate = new Date(lastMsgDate);
+      lastDate.setHours(0, 0, 0, 0);
+    }
   }
-  contentDiv.innerHTML = text;
-  messageDiv.appendChild(contentDiv);
+  const currentDate = new Date(date);
+  currentDate.setHours(0, 0, 0, 0);
 
-  const footerDiv = document.createElement("div");
-  footerDiv.classList.add("message-footer");
-
-  const time = timestamp || new Date().toLocaleTimeString();
-  const timeSpan = document.createElement("span");
-  timeSpan.classList.add("message-timestamp");
-  timeSpan.innerText = time;
-  footerDiv.appendChild(timeSpan);
-
-  if (!isUser) {
-    // Boutons d'évaluation
-    const ratingDiv = document.createElement("div");
-    ratingDiv.classList.add("rating-buttons");
-    ratingDiv.innerHTML = `
-            <button class="rating-btn up" title="Utile"><i class="fas fa-thumbs-up"></i></button>
-            <button class="rating-btn down" title="Pas utile"><i class="fas fa-thumbs-down"></i></button>
-        `;
-    ratingDiv.querySelectorAll(".rating-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const value = btn.classList.contains("up") ? "up" : "down";
-        const ratings =
-          JSON.parse(localStorage.getItem("orientiugRatings")) || {};
-        const msgId = Date.now() + "-" + Math.random();
-        ratings[msgId] = { text, value };
-        localStorage.setItem("orientiugRatings", JSON.stringify(ratings));
-        btn.parentElement
-          .querySelectorAll(".rating-btn")
-          .forEach((b) => b.classList.remove("selected"));
-        btn.classList.add("selected");
-      });
-    });
-    footerDiv.appendChild(ratingDiv);
+  if (!lastDate || lastDate.getTime() !== currentDate.getTime() || force) {
+    const separator = document.createElement("div");
+    separator.classList.add("date-separator");
+    separator.innerText = getDateLabel(date);
+    chatMessages.appendChild(separator);
   }
+}
 
-  messageDiv.appendChild(footerDiv);
-  chatMessages.appendChild(messageDiv);
+function addMessage(text, isUser = false, timestamp = null) {
+  const messageDate = timestamp ? new Date(timestamp) : new Date();
+  addDateSeparator(messageDate);
+
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("message-wrapper");
+  wrapper.classList.add(isUser ? "user" : "bot");
+  wrapper.dataset.date = messageDate.toISOString(); // stocker la date pour les séparateurs futurs
+
+  const bubble = document.createElement("div");
+  bubble.classList.add("message-bubble");
+  bubble.innerText = text;
+
+  const time = document.createElement("div");
+  time.classList.add("message-time");
+  time.innerText = messageDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  bubble.appendChild(time);
+  wrapper.appendChild(bubble);
+  chatMessages.appendChild(wrapper);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
-  if (save) {
-    saveChatHistory();
-  }
+  // Sauvegarder le message dans le localStorage
+  messages.push({ text, isUser, timestamp: messageDate.toISOString() });
+  localStorage.setItem("orientiugChatMessages", JSON.stringify(messages));
 
   if (isUser) {
     messageCount++;
     localStorage.setItem("messageCount", messageCount);
-    checkBadges();
+    // Simuler une réponse du bot après un délai
+    setTimeout(() => {
+      const botResponse = getBotResponse(text);
+      addMessage(botResponse, false);
+    }, 1000);
   }
 }
 
-// Sauvegarder l'historique
-function saveChatHistory() {
-  const messages = [];
-  document.querySelectorAll("#chat-messages .message").forEach((msgEl) => {
-    const isUser = msgEl.classList.contains("user-message");
-    const textEl = msgEl.querySelector(".message-content");
-    const text = textEl ? textEl.innerText : "";
-    const timestamp =
-      msgEl.querySelector(".message-timestamp")?.innerText ||
-      new Date().toLocaleTimeString();
-    messages.push({ text, isUser, timestamp });
-  });
-  localStorage.setItem("orientiugChatHistory", JSON.stringify(messages));
-}
-
-// Charger l'historique
-function loadChatHistory() {
-  const saved = localStorage.getItem("orientiugChatHistory");
-  if (saved) {
-    try {
-      const messages = JSON.parse(saved);
-      chatMessages.innerHTML = ""; // vider les messages par défaut
-      messages.forEach((msg) => {
-        addMessage(msg.text, msg.isUser, msg.timestamp, false);
-      });
-    } catch (e) {
-      console.error("Erreur de chargement de l'historique");
-    }
-  } else {
-    // Message de bienvenue par défaut
-    chatMessages.innerHTML = ""; // vider
-    addMessage(
-      "Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.",
-      false,
-      null,
-      false
-    );
-  }
-}
-
-// Indicateur de frappe
-function showTypingIndicator() {
-  typingIndicator.classList.remove("hidden");
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function hideTypingIndicator() {
-  typingIndicator.classList.add("hidden");
-}
-
-// Réponse du bot (simulée)
 function getBotResponse(userMessage) {
   const msg = userMessage.toLowerCase();
   if (msg.includes("esg") || msg.includes("débouchés")) {
@@ -464,132 +425,112 @@ function getBotResponse(userMessage) {
   }
 }
 
-// Envoi d'un message
-function sendMessage() {
-  const text = chatInput.value.trim();
-  if (text === "") return;
-
-  // Si un quiz est actif, traiter la réponse
-  if (quizActive) {
-    handleQuizAnswer(text);
-    chatInput.value = "";
-    adjustTextareaHeight();
-    return;
+// Charger l'historique depuis localStorage
+function loadChatMessages() {
+  const saved = localStorage.getItem("orientiugChatMessages");
+  if (saved) {
+    try {
+      messages = JSON.parse(saved);
+      chatMessages.innerHTML = "";
+      let lastDate = null;
+      messages.forEach((msg) => {
+        const msgDate = new Date(msg.timestamp);
+        // Ajouter séparateur si changement de jour
+        const currentDate = new Date(msgDate);
+        currentDate.setHours(0, 0, 0, 0);
+        if (!lastDate || lastDate.getTime() !== currentDate.getTime()) {
+          const separator = document.createElement("div");
+          separator.classList.add("date-separator");
+          separator.innerText = getDateLabel(msgDate);
+          chatMessages.appendChild(separator);
+          lastDate = currentDate;
+        }
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("message-wrapper");
+        wrapper.classList.add(msg.isUser ? "user" : "bot");
+        wrapper.dataset.date = msg.timestamp;
+        const bubble = document.createElement("div");
+        bubble.classList.add("message-bubble");
+        bubble.innerText = msg.text;
+        const time = document.createElement("div");
+        time.classList.add("message-time");
+        time.innerText = msgDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        bubble.appendChild(time);
+        wrapper.appendChild(bubble);
+        chatMessages.appendChild(wrapper);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    } catch (e) {
+      console.error("Erreur de chargement de l'historique", e);
+      initDefaultMessage();
+    }
+  } else {
+    initDefaultMessage();
   }
-
-  addMessage(text, true);
-  chatInput.value = "";
-  adjustTextareaHeight();
-
-  // Montrer l'indicateur de frappe
-  showTypingIndicator();
-
-  // Simuler un délai de réponse
-  setTimeout(() => {
-    hideTypingIndicator();
-    const response = getBotResponse(text);
-    addMessage(response, false);
-  }, 1500);
 }
 
-// Raccourcis clavier
-chatInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && e.ctrlKey) {
-    e.preventDefault();
-    sendMessage();
-  } else if (e.key === "Escape") {
-    chatInput.value = "";
-    adjustTextareaHeight();
-  }
-});
-
-// Zone de saisie extensible
-function adjustTextareaHeight() {
-  chatInput.style.height = "auto";
-  chatInput.style.height = chatInput.scrollHeight + "px";
-}
-
-chatInput.addEventListener("input", adjustTextareaHeight);
-
-// Bouton de défilement rapide
-chatMessages.addEventListener("scroll", () => {
-  const isScrolled =
-    chatMessages.scrollTop <
-    chatMessages.scrollHeight - chatMessages.clientHeight - 50;
-  scrollDownBtn.classList.toggle("hidden", !isScrolled);
-});
-
-scrollDownBtn.addEventListener("click", () => {
-  chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: "smooth" });
-});
-
-// Suggestions de questions (inchangé)
-suggestionBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const question = btn.textContent;
-    chatInput.value = question;
-    sendMessage();
-  });
-});
-
-// ===== GESTION DU QUIZ =====
-startQuizBtn.addEventListener("click", () => {
-  quizActive = true;
-  quizStep = 0;
+function initDefaultMessage() {
+  messages = [];
   addMessage(
-    "🎯 Commençons le quiz d'orientation ! Répondez aux questions.",
+    "Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.",
     false
   );
-  setTimeout(() => {
-    askNextQuizQuestion();
-  }, 500);
+}
+
+// Envoi de message
+sendBtn.addEventListener("click", () => {
+  const text = chatInput.value.trim();
+  if (text === "") return;
+  addMessage(text, true);
+  chatInput.value = "";
 });
 
-function askNextQuizQuestion() {
-  if (quizStep < quizQuestions.length) {
-    const q = quizQuestions[quizStep];
-    let optionsText = q.options.map((opt) => `• ${opt}`).join("\n");
-    addMessage(q.question + "\n" + optionsText, false);
-  } else {
-    // Fin du quiz, donner une recommandation
-    quizActive = false;
-    // Pour l'exemple, on prend la dernière réponse stockée
-    const lastAnswer =
-      localStorage.getItem("lastQuizAnswer") || "Gestion / Commerce";
-    let recommendation =
-      quizRecommendations[lastAnswer] ||
-      "Contactez un conseiller pour plus d'aide.";
-    addMessage(recommendation, false);
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendBtn.click();
   }
-}
+});
 
-function handleQuizAnswer(answer) {
-  // Sauvegarder la réponse (pour la démo, on garde la dernière)
-  localStorage.setItem("lastQuizAnswer", answer);
-  quizStep++;
-  setTimeout(() => {
-    askNextQuizQuestion();
-  }, 500);
-}
+// Bouton pièce jointe : afficher/masquer la barre d'outils
+attachBtn.addEventListener("click", () => {
+  toolbar.classList.toggle("hidden");
+});
 
-// ===== GESTION DES BADGES =====
-function checkBadges() {
-  badgeThresholds.forEach((threshold) => {
-    if (messageCount === threshold) {
-      showBadgeNotification(badgeMessages[threshold]);
-    }
+// Simuler les actions des boutons
+emojiBtn.addEventListener("click", () => {
+  alert("Sélecteur d’émojis (simulé)");
+});
+
+voiceBtn.addEventListener("click", () => {
+  alert("Enregistrement vocal (simulé)");
+});
+
+voiceCallBtn.addEventListener("click", () => {
+  alert("Appel vocal (simulé)");
+});
+
+threeDotsBtn.addEventListener("click", () => {
+  alert("Menu à trois points (simulé)");
+});
+
+// Cacher la barre d'outils si on clique ailleurs
+document.addEventListener("click", (e) => {
+  if (!attachBtn.contains(e.target) && !toolbar.contains(e.target)) {
+    toolbar.classList.add("hidden");
+  }
+});
+
+// Actions de la barre d'outils
+document.querySelectorAll(".chat-toolbar button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    alert(`Action : ${btn.innerText} (simulée)`);
+    toolbar.classList.add("hidden");
   });
-}
-
-function showBadgeNotification(message) {
-  const notif = document.createElement("div");
-  notif.classList.add("badge-notification");
-  notif.innerText = message;
-  document.body.appendChild(notif);
-  setTimeout(() => {
-    notif.remove();
-  }, 3000);
-}
+});
 
 // ===== FERMETURE DES MODALES AU CLIC SUR LE FOND =====
 window.addEventListener("click", (e) => {
@@ -597,38 +538,3 @@ window.addEventListener("click", (e) => {
     loginModal.classList.add("hidden");
   }
 });
-
-// ===== GESTION DE LA NAVIGATION ORIENTIUG =====
-// ... (les constantes existantes)
-
-function enterOrientIUG() {
-  window.scrollTo(0, 0); // scroll en haut
-  hubSection.classList.add("hidden");
-  orientiugSection.classList.remove("hidden");
-  presentationDiv.classList.remove("hidden");
-  chatDiv.classList.add("hidden");
-  headerIcon.className = "fas fa-compass";
-  headerTitle.textContent = "OrientIUG";
-  backButton.classList.remove("hidden");
-}
-
-function returnToHub() {
-  window.scrollTo(0, 0);
-  hubSection.classList.remove("hidden");
-  orientiugSection.classList.add("hidden");
-  headerIcon.className = "fas fa-cubes";
-  headerTitle.textContent = "Hub IUG";
-  backButton.classList.add("hidden");
-}
-
-// Lors du passage de la présentation au chat
-goToChatBtn.addEventListener("click", () => {
-  window.scrollTo(0, 0);
-  presentationDiv.classList.add("hidden");
-  chatDiv.classList.remove("hidden");
-  loadChatHistory();
-});
-
-// Si on ajoute un bouton pour revenir du chat à la présentation (optionnel)
-// Dans notre cas, on a déjà un back-button global qui ramène au hub.
-// Mais si on voulait revenir à la présentation depuis le chat, on pourrait ajouter un bouton dédié.
