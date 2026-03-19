@@ -9,12 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- PWA manifest -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Hub IUG">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192?text=Hub+IUG">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -48,13 +42,13 @@
             </div>
             <!-- Actions du chat (cachées par défaut) -->
             <div id="chat-actions" class="chat-actions hidden">
-                <button id="voice-call-btn" class="icon-btn desktop-only" aria-label="Appel vocal">
+                <button id="voice-call-btn" class="icon-btn" aria-label="Appel vocal">
                     <i class="fas fa-phone"></i>
                 </button>
-                <button id="three-dots-btn" class="icon-btn desktop-only" aria-label="Menu">
+                <button id="three-dots-btn" class="icon-btn" aria-label="Menu">
                     <i class="fas fa-ellipsis-vertical"></i>
                 </button>
-                <button id="loginBtnChat" class="icon-btn desktop-only" aria-label="Se connecter">
+                <button id="loginBtnChat" class="icon-btn" aria-label="Se connecter">
                     <i class="fas fa-user-circle"></i>
                 </button>
                 <button id="menuToggleChat" class="icon-btn burger" aria-label="Menu">
@@ -247,6 +241,12 @@
             <div id="orientiug-chat-fullscreen" class="orientiug-chat-fullscreen hidden">
                 <div class="chat-fullscreen-messages" id="chat-fullscreen-messages">
                     <!-- Les messages seront injectés ici -->
+                    <div class="message-wrapper bot">
+                        <div class="message-bubble">
+                            Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.
+                        </div>
+                        <div class="message-time">10:00</div>
+                    </div>
                 </div>
                 <div class="chat-fullscreen-input-area">
                     <button class="attach-btn" id="attach-btn"><i class="fas fa-plus"></i></button>
@@ -338,21 +338,6 @@
             <button id="loginClose">Fermer</button>
         </div>
     </div>
-
-    <!-- Service worker registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker enregistré avec succès:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Échec de l\'enregistrement du ServiceWorker:', error);
-                    });
-            });
-        }
-    </script>
 
     <script src="script.js"></script>
 </body>
