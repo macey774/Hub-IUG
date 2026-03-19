@@ -507,6 +507,44 @@ document.querySelectorAll('.chat-toolbar button').forEach(btn => {
     });
 });
 
+// ===== GESTION DE L'INSTALLATION PWA =====
+let deferredPrompt;
+const installBtn = document.getElementById('installAppBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Empêche le navigateur d'afficher sa propre bannière
+    e.preventDefault();
+    // Sauvegarde l'événement pour l'utiliser plus tard
+    deferredPrompt = e;
+    // Affiche le bouton d'installation dans le menu
+    installBtn.classList.remove('hidden');
+});
+
+// Clic sur le bouton d'installation
+installBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!deferredPrompt) {
+        // L'événement n'est pas disponible (déjà utilisé ou site non installable)
+        return;
+    }
+    // Affiche la boîte de dialogue d'installation native
+    deferredPrompt.prompt();
+    // Attend le choix de l'utilisateur
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`Résultat de l'installation : ${outcome}`);
+    // On ne peut utiliser l'événement qu'une seule fois, on le réinitialise
+    deferredPrompt = null;
+    // On cache le bouton (l'app est installée ou l'utilisateur a refusé)
+    installBtn.classList.add('hidden');
+});
+
+// Si l'application est installée par un autre moyen, on cache le bouton
+window.addEventListener('appinstalled', () => {
+    console.log('PWA installée avec succès.');
+    deferredPrompt = null;
+    installBtn.classList.add('hidden');
+});
+
 // ===== FERMETURE DES MODALES AU CLIC SUR LE FOND =====
 window.addEventListener('click', (e) => {
     if (e.target === loginModal) {
