@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -12,6 +13,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
+
 <body>
   <!-- SPLASH SCREEN : cubes formant l'icône -->
   <div id="splash-screen" class="splash-screen">
@@ -68,6 +70,7 @@
           <i class="fas fa-bars"></i>
         </button>
       </div>
+
       <!-- Actions de la page inscription (cachées par défaut) -->
       <div id="inscription-actions" class="inscription-actions hidden">
         <button id="clear-form-btn" class="icon-btn" aria-label="Vider les champs">
@@ -351,6 +354,27 @@
           </ul>
         </div>
 
+        <!-- Modale d'inscription -->
+        <div id="register-modal" class="modal hidden">
+          <div class="modal-content">
+            <h2>Inscription à l'IUG</h2>
+            <form id="register-form">
+              <input type="text" placeholder="Nom complet" required>
+              <input type="email" placeholder="Email" required>
+              <input type="tel" placeholder="Téléphone">
+              <select required>
+                <option value="">Choisissez votre filière</option>
+                <option>ESG (Gestion)</option>
+                <option>ISTA (Informatique)</option>
+                <option>ISA (Agronomie)</option>
+              </select>
+              <button type="submit">Envoyer la demande</button>
+              <button type="button" id="close-register">Fermer</button>
+            </form>
+            <p id="register-feedback" class="feedback"></p>
+          </div>
+        </div>
+
         <!-- Panneau de recherche flottant -->
         <div id="search-panel" class="search-panel hidden">
           <input type="text" id="search-input" placeholder="Rechercher un message...">
@@ -617,4 +641,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
