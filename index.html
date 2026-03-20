@@ -1,344 +1,455 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Hub IUG – Édition Communautaire</title>
-    <!-- Google Fonts & Font Awesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Hub IUG – Édition Communautaire</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Bande floutée de 10px en haut -->
-    <div class="blur-top-gap"></div>
+  <!-- Bande floutée de 10px en haut -->
+  <div class="blur-top-gap"></div>
 
-    <!-- HUBAR (barre fixe) -->
-    <div class="hubar">
-        <div class="hubar-left">
-            <span id="back-button" class="back-button hidden"><i class="fas fa-arrow-left"></i></span>
-            <div class="logo-area" id="header-logo">
-                <i class="fas fa-cubes" id="header-icon"></i>
-                <h1 id="header-title">Hub IUG</h1>
+  <!-- HUBAR (barre fixe) -->
+  <div class="hubar">
+    <div class="hubar-left">
+      <span id="back-button" class="back-button hidden"><i class="fas fa-arrow-left"></i></span>
+      <div class="logo-area" id="header-logo">
+        <i class="fas fa-cubes" id="header-icon"></i>
+        <h1 id="header-title">Hub IUG</h1>
+      </div>
+    </div>
+    <div class="hubar-right">
+      <!-- Actions du hub (visibles par défaut) -->
+      <div id="hub-actions" class="hub-actions">
+        <button id="themeToggle" class="icon-btn" aria-label="Changer de thème">
+          <i class="fas fa-sun"></i>
+        </button>
+        <button id="langToggle" class="icon-btn" aria-label="Changer de langue">
+          <i class="fas fa-language"></i>
+        </button>
+        <button id="loginBtn" class="icon-btn" aria-label="Se connecter">
+          <i class="fas fa-user-circle"></i>
+        </button>
+        <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <!-- Actions du chat (cachées par défaut) -->
+      <div id="chat-actions" class="chat-actions hidden">
+        <button id="voice-call-btn" class="icon-btn" aria-label="Appel vocal">
+          <i class="fas fa-phone"></i>
+        </button>
+        <button id="three-dots-btn" class="icon-btn" aria-label="Menu">
+          <i class="fas fa-ellipsis-vertical"></i>
+        </button>
+        <button id="loginBtnChat" class="icon-btn" aria-label="Se connecter">
+          <i class="fas fa-user-circle"></i>
+        </button>
+        <button id="menuToggleChat" class="icon-btn burger" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu mobile (caché par défaut) -->
+  <nav id="mobileMenu" class="mobile-menu hidden">
+    <ul>
+      <li><a href="#" id="mobileThemeToggle"><i class="fas fa-sun"></i> Mode clair/sombre</a></li>
+      <li><a href="#" id="mobileLangToggle"><i class="fas fa-language"></i> English</a></li>
+      <li><a href="#" id="mobileLogin"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+      <li><a href="#" id="mobileAbout"><i class="fas fa-info-circle"></i> À propos</a></li>
+      <li><a href="#" id="mobileFaq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <!-- SECTION HUB (visible par défaut) -->
+    <div id="hub-section">
+      <header>
+        <div class="news-ticker">
+          <div class="ticker-content">
+            <span>📢 Nouveau : Tutoriels vidéo disponibles pour BusEye et Cerise !</span>
+            <span>⭐ OrientIUG fête ses 1 an cette semaine</span>
+            <span>📚 Banque d'annales : plus de 500 sujets ajoutés</span>
+          </div>
+        </div>
+        <p class="subtitle">Votre boîte à outils étudiante, réinventée.</p>
+        <div class="header-decoration"></div>
+      </header>
+
+      <!-- GRILLE DES PROJETS -->
+      <div class="projects-grid">
+        <!-- Carte BusEye -->
+        <div class="card" data-url="#">
+          <div class="card-badges">
+            <span class="badge popular">Populaire</span>
+          </div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FF5714);">
+            <i class="fas fa-bus"></i>
+          </div>
+          <h2>BusEye</h2>
+          <p>Suivez les bus en temps réel, horaires et itinéraires.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte Banque d'Annales -->
+        <div class="card" data-url="#">
+          <div class="card-badges">
+            <span class="badge new">Nouveau</span>
+          </div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #4A90E2, #2C5F9A);">
+            <span class="emoji-icon">📚</span>
+          </div>
+          <h2>Banque d'Annales IUG</h2>
+          <p>Annales des examens, filtrage par matière.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte Cerise -->
+        <div class="card" data-url="#">
+          <div class="card-badges"></div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #E94E3A, #B33C2E);">
+            <span class="emoji-icon">😉</span>
+          </div>
+          <h2>Cerise</h2>
+          <p>Assistante virtuelle pour la vie universitaire.</p>
+          <div class="card-footer">
+            <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte OrientIUG -->
+        <div class="card" id="orientiug-card" data-url="#">
+          <div class="card-badges"></div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #6C5B7B, #4A3A5A);">
+            <i class="fas fa-compass"></i>
+          </div>
+          <h2>OrientIUG</h2>
+          <p>Orientation personnalisée et conseils parcours.</p>
+          <div class="card-footer">
+            <button class="btn" id="orientiug-access">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+      </div>
+
+      <!-- SECTION RECOMMANDATIONS -->
+      <section class="recommendations">
+        <h2>Recommandé pour vous</h2>
+        <div class="rec-cards">
+          <div class="rec-card">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Préparez vos partiels avec la Banque d'annales</span>
+          </div>
+          <div class="rec-card">
+            <i class="fas fa-map-signs"></i>
+            <span>Découvrez les parcours avec OrientIUG</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION ORIENTIUG (cachée par défaut) -->
+    <div id="orientiug-section" class="hidden">
+      <!-- Présentation -->
+      <div id="orientiug-presentation" class="orientiug-presentation">
+        <div class="presentation-content">
+          <p class="presentation-intro">
+            OrientIUG, votre boussole pour un avenir brillant. Que vous soyez en quête de sens, de débouchés ou d'inspiration, notre assistant vous éclaire sur les parcours qui ont fait leurs preuves. Découvrez les success stories de ceux qui ont marqué l'IUG et laissez-vous guider vers votre propre voie.
+          </p>
+
+          <h3>Ils ont réussi, et vous aussi !</h3>
+          <div class="success-stories">
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://www.univ-iug.com/assets/images/President.png" alt="Président de l'IUG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Président';">
+              </div>
+              <div class="story-text">
+                <strong>Steve Cédric DJAMBOU</strong>
+                <em>Président de l'IUG</em>
+                <p class="story-parcours">Diplômé de l'ESG, j'ai poursuivi avec un Master en Management, un Doctorat, et aujourd'hui je préside l'IUG. Mon parcours montre qu'avec de la détermination, tout est possible !</p>
+                <p class="story-quote">"L'IUG a été le tremplin de ma carrière. Chaque étudiant a le potentiel de devenir un leader. Je suis fier de guider la nouvelle génération vers la réussite."</p>
+              </div>
+            </div>
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://www.univ-iug.com/assets/images/tam.JPG" alt="Directeur de l'ESG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Directeur';">
+              </div>
+              <div class="story-text">
+                <strong>Dr. Tamnou</strong>
+                <em>Directeur de l'ESG</em>
+                <p class="story-parcours">Formé à l'ISTA, je suis devenu Ingénieur en Data Science, puis Directeur de l'ESG. La technologie est mon moteur, et l'IUG m'a donné les ailes pour innover.</p>
+                <p class="story-quote">"Les métiers du numérique évoluent vite, mais l'excellence de l'enseignement à l'IUG reste une constante. Rejoignez-nous pour écrire votre propre histoire."</p>
+              </div>
+            </div>
+            <!-- Troisième témoignage -->
+            <div class="story-card">
+              <div class="story-avatar">
+                <img src="https://via.placeholder.com/200?text=Ancien" alt="Ancien étudiant">
+              </div>
+              <div class="story-text">
+                <strong>Marie-Claire Koffi</strong>
+                <em>Ancienne étudiante de l'ISA, aujourd'hui chef de projet en agro-industrie</em>
+                <p class="story-parcours">De l'ISA à un poste de responsabilité dans une multinationale, mon parcours prouve que la formation de l'IUG ouvre des portes partout dans le monde.</p>
+                <p class="story-quote">"Grâce à l'IUG, j'ai acquis des compétences solides et un réseau précieux. Aujourd'hui, je contribue au développement durable à l'international."</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="motivation-block">
+            <p class="motivation-text">
+              Le succès n'est pas un hasard, c'est une construction. À l'IUG, nous croyons en chaque talent. Que vous rêviez de management, de tech ou d'agronomie, vous avez les clés en main. Laissez OrientIUG vous aider à les tourner.
+            </p>
+            <p class="motivation-cta">Prêt à tracer votre route ?</p>
+          </div>
+
+          <div class="presentation-footer">
+            <button id="go-to-chat" class="btn-primary">Trouver ma voix <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interface de chat plein écran (WhatsApp-like) -->
+      <div id="orientiug-chat-fullscreen" class="orientiug-chat-fullscreen hidden">
+        <div class="chat-fullscreen-messages" id="chat-fullscreen-messages">
+          <!-- Les messages seront injectés ici -->
+        </div>
+        <div class="chat-fullscreen-input-area">
+          <div class="input-wrapper">
+            <button class="emoji-sticker-btn" id="emoji-sticker-btn"><i class="fas fa-smile-wink"></i></button>
+            <textarea id="chat-fullscreen-input" rows="1" placeholder="Écrire un message..."></textarea>
+            <div class="input-buttons">
+              <button class="camera-btn" id="camera-btn"><i class="fas fa-camera"></i></button>
+              <button class="attach-doc-btn" id="attach-doc-btn"><i class="fas fa-paperclip"></i></button>
+            </div>
+          </div>
+          <button id="send-voice-btn" class="send-voice-btn"><i class="fas fa-microphone"></i></button>
+        </div>
+        <!-- Barre d'outils supplémentaire (cachée par défaut) -->
+        <div class="chat-toolbar hidden" id="chat-toolbar">
+          <button><i class="fas fa-image"></i> Galerie</button>
+          <button><i class="fas fa-camera"></i> Appareil photo</button>
+          <button><i class="fas fa-file"></i> Document</button>
+          <button><i class="fas fa-location-dot"></i> Localisation</button>
+          <button><i class="fas fa-user"></i> Contact</button>
+        </div>
+        
+        <!-- Sélecteur d'émojis -->
+<div id="emoji-picker" class="emoji-picker hidden">
+    <div class="emoji-picker-header">
+        <span>Émojis</span>
+    </div>
+    <div class="emoji-picker-content">
+        <!-- Section récents (ajoutée dynamiquement) -->
+        <div class="emoji-category" id="recent-category" style="display: none;">
+            <h4>📌 Récemment utilisés</h4>
+            <div class="emoji-grid" id="recent-grid"></div>
+        </div>
+        <div class="emoji-category">
+            <h4>😀 Smileys & émotions</h4>
+            <div class="emoji-grid">
+                <span class="emoji-option">😀</span> <span class="emoji-option">😃</span> <span class="emoji-option">😄</span>
+                <span class="emoji-option">😁</span> <span class="emoji-option">😆</span> <span class="emoji-option">😅</span>
+                <span class="emoji-option">😂</span> <span class="emoji-option">🤣</span> <span class="emoji-option">😊</span>
+                <span class="emoji-option">😇</span> <span class="emoji-option">🙂</span> <span class="emoji-option">🙃</span>
+                <span class="emoji-option">😉</span> <span class="emoji-option">😌</span> <span class="emoji-option">😍</span>
+                <span class="emoji-option">🥰</span> <span class="emoji-option">😘</span> <span class="emoji-option">😗</span>
             </div>
         </div>
-        <div class="hubar-right">
-            <!-- Actions du hub (visibles par défaut) -->
-            <div id="hub-actions" class="hub-actions">
-                <button id="themeToggle" class="icon-btn desktop-only" aria-label="Changer de thème">
-                    <i class="fas fa-sun"></i>
-                </button>
-                <button id="langToggle" class="icon-btn desktop-only" aria-label="Changer de langue">
-                    <i class="fas fa-language"></i>
-                </button>
-                <button id="loginBtn" class="icon-btn desktop-only" aria-label="Se connecter">
-                    <i class="fas fa-user-circle"></i>
-                </button>
-                <button id="menuToggle" class="icon-btn burger" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <div class="emoji-category">
+            <h4>👋 Gestes & personnes</h4>
+            <div class="emoji-grid">
+                <span class="emoji-option">👋</span> <span class="emoji-option">👌</span> <span class="emoji-option">👍</span>
+                <span class="emoji-option">👎</span> <span class="emoji-option">👏</span> <span class="emoji-option">🙌</span>
+                <span class="emoji-option">💪</span> <span class="emoji-option">🤝</span> <span class="emoji-option">❤️</span>
+                <span class="emoji-option">🧡</span> <span class="emoji-option">💛</span> <span class="emoji-option">💚</span>
+                <span class="emoji-option">💙</span> <span class="emoji-option">💜</span> <span class="emoji-option">🖤</span>
+                <span class="emoji-option">🤍</span> <span class="emoji-option">🤎</span> <span class="emoji-option">💔</span>
             </div>
-            <!-- Actions du chat (cachées par défaut) -->
-            <div id="chat-actions" class="chat-actions hidden">
-                <button id="voice-call-btn" class="icon-btn" aria-label="Appel vocal">
-                    <i class="fas fa-phone"></i>
-                </button>
-                <button id="three-dots-btn" class="icon-btn" aria-label="Menu">
-                    <i class="fas fa-ellipsis-vertical"></i>
-                </button>
-                <button id="loginBtnChat" class="icon-btn" aria-label="Se connecter">
-                    <i class="fas fa-user-circle"></i>
-                </button>
-                <button id="menuToggleChat" class="icon-btn burger" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+        </div>
+        <div class="emoji-category">
+            <h4>🐶 Animaux & nature</h4>
+            <div class="emoji-grid">
+                <span class="emoji-option">🐶</span> <span class="emoji-option">🐱</span> <span class="emoji-option">🐭</span>
+                <span class="emoji-option">🐹</span> <span class="emoji-option">🐰</span> <span class="emoji-option">🦊</span>
+                <span class="emoji-option">🐻</span> <span class="emoji-option">🐼</span> <span class="emoji-option">🐨</span>
+                <span class="emoji-option">🐸</span> <span class="emoji-option">🐒</span> <span class="emoji-option">🐔</span>
+                <span class="emoji-option">🐧</span> <span class="emoji-option">🐦</span> <span class="emoji-option">🐴</span>
+                <span class="emoji-option">🐝</span> <span class="emoji-option">🌸</span> <span class="emoji-option">🌺</span>
+            </div>
+        </div>
+        <div class="emoji-category">
+            <h4>🎉 Objets & activités</h4>
+            <div class="emoji-grid">
+                <span class="emoji-option">🎉</span> <span class="emoji-option">🎁</span> <span class="emoji-option">🎈</span>
+                <span class="emoji-option">⭐</span> <span class="emoji-option">🌟</span> <span class="emoji-option">🔥</span>
+                <span class="emoji-option">💡</span> <span class="emoji-option">📚</span> <span class="emoji-option">✏️</span>
+                <span class="emoji-option">📱</span> <span class="emoji-option">💻</span> <span class="emoji-option">🖥️</span>
+                <span class="emoji-option">⌨️</span> <span class="emoji-option">🖱️</span> <span class="emoji-option">📷</span>
+                <span class="emoji-option">🎥</span> <span class="emoji-option">🎬</span> <span class="emoji-option">🎵</span>
             </div>
         </div>
     </div>
+</div>
+        
+        <!-- Menu trois points -->
+<div id="three-dots-menu" class="three-dots-menu hidden">
+    <ul>
+        <li id="menu-register">📄 Fiche d'inscription</li>
+        <li id="menu-media">📁 Médias, liens et documents</li>
+        <li id="menu-search">🔍 Rechercher</li>
+        <li id="menu-theme">🎨 Thème de la conversation</li>
+        <li id="menu-clear">🗑️ Effacer le contenu</li>
+        <li id="menu-report">⚠️ Signaler</li>
+    </ul>
+</div>
 
-    <!-- Menu mobile (caché par défaut) -->
-    <nav id="mobileMenu" class="mobile-menu hidden">
-        <ul>
-            <li><a href="#" id="mobileThemeToggle"><i class="fas fa-sun"></i> Mode clair/sombre</a></li>
-            <li><a href="#" id="mobileLangToggle"><i class="fas fa-language"></i> English</a></li>
-            <li><a href="#" id="mobileLogin"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
-            <li><a href="#" id="mobileAbout"><i class="fas fa-info-circle"></i> À propos</a></li>
-            <li><a href="#" id="mobileFaq"><i class="fas fa-question-circle"></i> FAQ</a></li>
-            <!-- Bouton d'installation PWA (caché par défaut) -->
-            <li><a href="#" id="installAppBtn" class="hidden"><i class="fas fa-download"></i> Installer l'app</a></li>
-        </ul>
-    </nav>
-
-    <div class="container">
-        <!-- SECTION HUB (visible par défaut) -->
-        <div id="hub-section">
-            <header>
-                <div class="news-ticker">
-                    <div class="ticker-content">
-                        <span>📢 Nouveau : Tutoriels vidéo disponibles pour BusEye et Cerise !</span>
-                        <span>⭐ OrientIUG fête ses 1 an cette semaine</span>
-                        <span>📚 Banque d'annales : plus de 500 sujets ajoutés</span>
-                    </div>
-                </div>
-                <p class="subtitle">Votre boîte à outils étudiante, réinventée.</p>
-                <div class="header-decoration"></div>
-            </header>
-
-            <!-- GRILLE DES PROJETS -->
-            <div class="projects-grid">
-                <!-- Carte BusEye -->
-                <div class="card" data-url="#">
-                    <div class="card-badges">
-                        <span class="badge popular">Populaire</span>
-                    </div>
-                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #FF8C42, #FF5714);">
-                        <i class="fas fa-bus"></i>
-                    </div>
-                    <h2>BusEye</h2>
-                    <p>Suivez les bus en temps réel, horaires et itinéraires.</p>
-                    <div class="card-footer">
-                        <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-                        <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-                            <i class="fas fa-play-circle"></i>
-                        </button>
-                    </div>
-                    <div class="card-shine"></div>
-                </div>
-
-                <!-- Carte Banque d'Annales -->
-                <div class="card" data-url="#">
-                    <div class="card-badges">
-                        <span class="badge new">Nouveau</span>
-                    </div>
-                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #4A90E2, #2C5F9A);">
-                        <span class="emoji-icon">📚</span>
-                    </div>
-                    <h2>Banque d'Annales IUG</h2>
-                    <p>Annales des examens, filtrage par matière.</p>
-                    <div class="card-footer">
-                        <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-                        <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-                            <i class="fas fa-play-circle"></i>
-                        </button>
-                    </div>
-                    <div class="card-shine"></div>
-                </div>
-
-                <!-- Carte Cerise -->
-                <div class="card" data-url="#">
-                    <div class="card-badges"></div>
-                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #E94E3A, #B33C2E);">
-                        <span class="emoji-icon">😉</span>
-                    </div>
-                    <h2>Cerise</h2>
-                    <p>Assistante virtuelle pour la vie universitaire.</p>
-                    <div class="card-footer">
-                        <button class="btn">Accéder <i class="fas fa-arrow-right"></i></button>
-                        <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-                            <i class="fas fa-play-circle"></i>
-                        </button>
-                    </div>
-                    <div class="card-shine"></div>
-                </div>
-
-                <!-- Carte OrientIUG -->
-                <div class="card" id="orientiug-card" data-url="#">
-                    <div class="card-badges"></div>
-                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #6C5B7B, #4A3A5A);">
-                        <i class="fas fa-compass"></i>
-                    </div>
-                    <h2>OrientIUG</h2>
-                    <p>Orientation personnalisée et conseils parcours.</p>
-                    <div class="card-footer">
-                        <button class="btn" id="orientiug-access">Accéder <i class="fas fa-arrow-right"></i></button>
-                        <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
-                            <i class="fas fa-play-circle"></i>
-                        </button>
-                    </div>
-                    <div class="card-shine"></div>
-                </div>
-            </div>
-
-            <!-- SECTION RECOMMANDATIONS -->
-            <section class="recommendations">
-                <h2>Recommandé pour vous</h2>
-                <div class="rec-cards">
-                    <div class="rec-card">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Préparez vos partiels avec la Banque d'annales</span>
-                    </div>
-                    <div class="rec-card">
-                        <i class="fas fa-map-signs"></i>
-                        <span>Découvrez les parcours avec OrientIUG</span>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- SECTION ORIENTIUG (cachée par défaut) -->
-        <div id="orientiug-section" class="hidden">
-            <!-- Présentation -->
-            <div id="orientiug-presentation" class="orientiug-presentation">
-                <div class="presentation-content">
-                    <p class="presentation-intro">
-                        OrientIUG, votre boussole pour un avenir brillant. Que vous soyez en quête de sens, de débouchés ou d'inspiration, notre assistant vous éclaire sur les parcours qui ont fait leurs preuves. Découvrez les success stories de ceux qui ont marqué l'IUG et laissez-vous guider vers votre propre voie.
-                    </p>
-
-                    <h3>Ils ont réussi, et vous aussi !</h3>
-                    <div class="success-stories">
-                        <div class="story-card">
-                            <div class="story-avatar">
-                                <img src="https://www.univ-iug.com/assets/images/President.png" alt="Président de l'IUG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Président';">
-                            </div>
-                            <div class="story-text">
-                                <strong>Steve Cédric DJAMBOU</strong>
-                                <em>Président de l'IUG</em>
-                                <p class="story-parcours">Diplômé de l'ESG, j'ai poursuivi avec un Master en Management, un Doctorat, et aujourd'hui je préside l'IUG. Mon parcours montre qu'avec de la détermination, tout est possible !</p>
-                                <p class="story-quote">"L'IUG a été le tremplin de ma carrière. Chaque étudiant a le potentiel de devenir un leader. Je suis fier de guider la nouvelle génération vers la réussite."</p>
-                            </div>
-                        </div>
-                        <div class="story-card">
-                            <div class="story-avatar">
-                                <img src="https://www.univ-iug.com/assets/images/tam.JPG" alt="Directeur de l'ESG" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=Directeur';">
-                            </div>
-                            <div class="story-text">
-                                <strong>Dr. Tamnou</strong>
-                                <em>Directeur de l'ESG</em>
-                                <p class="story-parcours">Formé à l'ISTA, je suis devenu Ingénieur en Data Science, puis Directeur de l'ESG. La technologie est mon moteur, et l'IUG m'a donné les ailes pour innover.</p>
-                                <p class="story-quote">"Les métiers du numérique évoluent vite, mais l'excellence de l'enseignement à l'IUG reste une constante. Rejoignez-nous pour écrire votre propre histoire."</p>
-                            </div>
-                        </div>
-                        <!-- Troisième témoignage -->
-                        <div class="story-card">
-                            <div class="story-avatar">
-                                <img src="https://via.placeholder.com/200?text=Ancien" alt="Ancien étudiant">
-                            </div>
-                            <div class="story-text">
-                                <strong>Marie-Claire Koffi</strong>
-                                <em>Ancienne étudiante de l'ISA, aujourd'hui chef de projet en agro-industrie</em>
-                                <p class="story-parcours">De l'ISA à un poste de responsabilité dans une multinationale, mon parcours prouve que la formation de l'IUG ouvre des portes partout dans le monde.</p>
-                                <p class="story-quote">"Grâce à l'IUG, j'ai acquis des compétences solides et un réseau précieux. Aujourd'hui, je contribue au développement durable à l'international."</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="motivation-block">
-                        <p class="motivation-text">
-                            Le succès n'est pas un hasard, c'est une construction. À l'IUG, nous croyons en chaque talent. Que vous rêviez de management, de tech ou d'agronomie, vous avez les clés en main. Laissez OrientIUG vous aider à les tourner.
-                        </p>
-                        <p class="motivation-cta">Prêt à tracer votre route ?</p>
-                    </div>
-
-                    <div class="presentation-footer">
-                        <button id="go-to-chat" class="btn-primary">Trouver ma voix <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Interface de chat plein écran (WhatsApp-like) -->
-            <div id="orientiug-chat-fullscreen" class="orientiug-chat-fullscreen hidden">
-                <div class="chat-fullscreen-messages" id="chat-fullscreen-messages">
-                    <!-- Les messages seront injectés ici -->
-                    <div class="message-wrapper bot">
-                        <div class="message-bubble">
-                            Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.
-                        </div>
-                        <div class="message-time">10:00</div>
-                    </div>
-                </div>
-                <div class="chat-fullscreen-input-area">
-                    <button class="attach-btn" id="attach-btn"><i class="fas fa-plus"></i></button>
-                    <div class="input-wrapper">
-                        <input type="text" id="chat-fullscreen-input" placeholder="Écrire un message...">
-                        <button class="emoji-btn" id="emoji-btn"><i class="fas fa-smile"></i></button>
-                        <button class="voice-btn" id="voice-btn"><i class="fas fa-microphone"></i></button>
-                    </div>
-                    <button class="send-btn" id="send-fullscreen-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-                <!-- Barre d'outils supplémentaire (cachée par défaut) -->
-                <div class="chat-toolbar hidden" id="chat-toolbar">
-                    <button><i class="fas fa-image"></i> Galerie</button>
-                    <button><i class="fas fa-camera"></i> Appareil photo</button>
-                    <button><i class="fas fa-file"></i> Document</button>
-                    <button><i class="fas fa-location-dot"></i> Localisation</button>
-                    <button><i class="fas fa-user"></i> Contact</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- FOOTER (commun) -->
-        <footer id="main-footer">
-            <div class="footer-links">
-                <a href="#" id="aboutLink">À propos</a>
-                <a href="#" id="faqLink">FAQ / Aide</a>
-                <a href="#" id="contactLink">Contact</a>
-                <a href="#" id="accessibilityLink">Accessibilité</a>
-            </div>
-            <div class="social-icons">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div class="ecoles">
-                <span>ESG</span> • <span>ISTA</span> • <span>ISA</span>
-            </div>
-            <p class="footer-institution">Institut Universitaire du Golfe de Guinée</p>
-            <p>© 2025 • Tous droits réservés</p>
-            <p class="contributeurs">🏆 Contributeurs du mois : Marie K., Jean K., Amadou D.</p>
-        </footer>
-    </div>
-
-    <!-- ÉLÉMENTS FLOTTANTS (communs) -->
-    <button id="helpButton" class="help-float" aria-label="Aide">
-        <i class="fas fa-question"></i>
-    </button>
-
-    <div id="accessibilityPanel" class="accessibility-panel hidden">
-        <h3>Accessibilité</h3>
-        <label>
-            Taille de police :
-            <select id="fontSize">
-                <option value="normal">Normale</option>
-                <option value="large">Grande</option>
-                <option value="xlarge">Très grande</option>
+<!-- Modale d'inscription -->
+<div id="register-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Inscription à l'IUG</h2>
+        <form id="register-form">
+            <input type="text" placeholder="Nom complet" required>
+            <input type="email" placeholder="Email" required>
+            <input type="tel" placeholder="Téléphone">
+            <select required>
+                <option value="">Choisissez votre filière</option>
+                <option>ESG (Gestion)</option>
+                <option>ISTA (Informatique)</option>
+                <option>ISA (Agronomie)</option>
             </select>
-        </label>
-        <label>
-            Contraste :
-            <select id="contrast">
-                <option value="normal">Normal</option>
-                <option value="high">Élevé</option>
-            </select>
-        </label>
-        <button id="closeAccessibility">Fermer</button>
+            <button type="submit">Envoyer la demande</button>
+            <button type="button" id="close-register">Fermer</button>
+        </form>
+        <p id="register-feedback" class="feedback"></p>
+    </div>
+</div>
+
+<!-- Panneau de recherche (caché par défaut) -->
+<div id="search-panel" class="search-panel hidden">
+    <input type="text" id="search-input" placeholder="Rechercher un message...">
+    <button id="search-close">×</button>
+    <div id="search-results-count"></div>
+</div>
+
+<!-- Panneau de thème de conversation -->
+<div id="theme-panel" class="theme-panel hidden">
+    <h3>Personnaliser le chat</h3>
+    <label>Arrière‑plan</label>
+    <div class="color-options">
+        <div class="color-option" data-bg="#f6f9fc" data-bubble="#e5e5ea" data-user-bubble="#3a7ca5">Défaut</div>
+        <div class="color-option" data-bg="#0f172a" data-bubble="#1e293b" data-user-bubble="#2563eb">Sombre</div>
+        <div class="color-option" data-bg="#fff7ed" data-bubble="#fed7aa" data-user-bubble="#ea580c">Chaleureux</div>
+        <div class="color-option" data-bg="#f0fdf4" data-bubble="#bbf7d0" data-user-bubble="#15803d">Nature</div>
+    </div>
+    <button id="theme-reset">Réinitialiser</button>
+    <button id="theme-close">Fermer</button>
+</div>
+        
+      </div>
     </div>
 
-    <div id="surveyPopup" class="survey-popup hidden">
-        <p>Quel outil utilisez-vous le plus ?</p>
-        <div class="survey-options">
-            <button data-tool="buseye">BusEye</button>
-            <button data-tool="annales">Annales</button>
-            <button data-tool="cerise">Cerise</button>
-            <button data-tool="orient">OrientIUG</button>
-        </div>
-        <button id="closeSurvey">Plus tard</button>
-    </div>
+    <!-- FOOTER (commun) -->
+    <footer id="main-footer">
+      <div class="footer-links">
+        <a href="#" id="aboutLink">À propos</a>
+        <a href="#" id="faqLink">FAQ / Aide</a>
+        <a href="#" id="contactLink">Contact</a>
+        <a href="#" id="accessibilityLink">Accessibilité</a>
+      </div>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+      <div class="ecoles">
+        <span>ESG</span> • <span>ISTA</span> • <span>ISA</span>
+      </div>
+      <p class="footer-institution">Institut Universitaire du Golfe de Guinée</p>
+      <p>© 2025 • Tous droits réservés</p>
+      <p class="contributeurs">🏆 Contributeurs du mois : Marie K., Jean K., Amadou D.</p>
+    </footer>
+  </div>
 
-    <!-- Modale de connexion -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Connexion</h2>
-            <p>Connectez-vous avec votre compte ENT</p>
-            <input type="text" placeholder="Identifiant">
-            <input type="password" placeholder="Mot de passe">
-            <button id="loginSubmit">Se connecter</button>
-            <button id="loginClose">Fermer</button>
-        </div>
-    </div>
+  <!-- ÉLÉMENTS FLOTTANTS (communs) -->
+  <button id="helpButton" class="help-float" aria-label="Aide">
+    <i class="fas fa-question"></i>
+  </button>
 
-    <script src="script.js"></script>
+  <div id="accessibilityPanel" class="accessibility-panel hidden">
+    <h3>Accessibilité</h3>
+    <label>
+      Taille de police :
+      <select id="fontSize">
+        <option value="normal">Normale</option>
+        <option value="large">Grande</option>
+        <option value="xlarge">Très grande</option>
+      </select>
+    </label>
+    <label>
+      Contraste :
+      <select id="contrast">
+        <option value="normal">Normal</option>
+        <option value="high">Élevé</option>
+      </select>
+    </label>
+    <button id="closeAccessibility">Fermer</button>
+  </div>
+
+  <div id="surveyPopup" class="survey-popup hidden">
+    <p>Quel outil utilisez-vous le plus ?</p>
+    <div class="survey-options">
+      <button data-tool="buseye">BusEye</button>
+      <button data-tool="annales">Annales</button>
+      <button data-tool="cerise">Cerise</button>
+      <button data-tool="orient">OrientIUG</button>
+    </div>
+    <button id="closeSurvey">Plus tard</button>
+  </div>
+
+  <!-- Modale de connexion -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Connexion</h2>
+      <p>Connectez-vous avec votre compte ENT</p>
+      <input type="text" placeholder="Identifiant">
+      <input type="password" placeholder="Mot de passe">
+      <button id="loginSubmit">Se connecter</button>
+      <button id="loginClose">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toast-container" class="toast-container hidden"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
