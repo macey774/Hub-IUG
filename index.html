@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -209,7 +210,6 @@
                 <p class="story-quote">"Les métiers du numérique évoluent vite, mais l'excellence de l'enseignement à l'IUG reste une constante. Rejoignez-nous pour écrire votre propre histoire."</p>
               </div>
             </div>
-            <!-- Troisième témoignage -->
             <div class="story-card">
               <div class="story-avatar">
                 <img src="https://via.placeholder.com/200?text=Ancien" alt="Ancien étudiant">
@@ -236,7 +236,7 @@
         </div>
       </div>
 
-      <!-- Interface de chat plein écran (WhatsApp-like) -->
+      <!-- Interface de chat plein écran -->
       <div id="orientiug-chat-fullscreen" class="orientiug-chat-fullscreen hidden">
         <div class="chat-fullscreen-messages" id="chat-fullscreen-messages">
           <!-- Les messages seront injectés ici -->
@@ -252,7 +252,8 @@
           </div>
           <button id="send-voice-btn" class="send-voice-btn"><i class="fas fa-microphone"></i></button>
         </div>
-        <!-- Barre d'outils supplémentaire (cachée par défaut) -->
+
+        <!-- Barre d'outils (pièces jointes) -->
         <div class="chat-toolbar hidden" id="chat-toolbar">
           <button><i class="fas fa-image"></i> Galerie</button>
           <button><i class="fas fa-camera"></i> Appareil photo</button>
@@ -260,119 +261,116 @@
           <button><i class="fas fa-location-dot"></i> Localisation</button>
           <button><i class="fas fa-user"></i> Contact</button>
         </div>
-        
+
         <!-- Sélecteur d'émojis -->
-<div id="emoji-picker" class="emoji-picker hidden">
-    <div class="emoji-picker-header">
-        <span>Émojis</span>
-    </div>
-    <div class="emoji-picker-content">
-        <!-- Section récents (ajoutée dynamiquement) -->
-        <div class="emoji-category" id="recent-category" style="display: none;">
-            <h4>📌 Récemment utilisés</h4>
-            <div class="emoji-grid" id="recent-grid"></div>
-        </div>
-        <div class="emoji-category">
-            <h4>😀 Smileys & émotions</h4>
-            <div class="emoji-grid">
+        <div id="emoji-picker" class="emoji-picker hidden">
+          <div class="emoji-picker-header">
+            <span>Émojis</span>
+          </div>
+          <div class="emoji-picker-content">
+            <div class="emoji-category" id="recent-category" style="display: none;">
+              <h4>📌 Récemment utilisés</h4>
+              <div class="emoji-grid" id="recent-grid"></div>
+            </div>
+            <div class="emoji-category">
+              <h4>😀 Smileys & émotions</h4>
+              <div class="emoji-grid">
                 <span class="emoji-option">😀</span> <span class="emoji-option">😃</span> <span class="emoji-option">😄</span>
                 <span class="emoji-option">😁</span> <span class="emoji-option">😆</span> <span class="emoji-option">😅</span>
                 <span class="emoji-option">😂</span> <span class="emoji-option">🤣</span> <span class="emoji-option">😊</span>
                 <span class="emoji-option">😇</span> <span class="emoji-option">🙂</span> <span class="emoji-option">🙃</span>
                 <span class="emoji-option">😉</span> <span class="emoji-option">😌</span> <span class="emoji-option">😍</span>
                 <span class="emoji-option">🥰</span> <span class="emoji-option">😘</span> <span class="emoji-option">😗</span>
+              </div>
             </div>
-        </div>
-        <div class="emoji-category">
-            <h4>👋 Gestes & personnes</h4>
-            <div class="emoji-grid">
+            <div class="emoji-category">
+              <h4>👋 Gestes & personnes</h4>
+              <div class="emoji-grid">
                 <span class="emoji-option">👋</span> <span class="emoji-option">👌</span> <span class="emoji-option">👍</span>
                 <span class="emoji-option">👎</span> <span class="emoji-option">👏</span> <span class="emoji-option">🙌</span>
                 <span class="emoji-option">💪</span> <span class="emoji-option">🤝</span> <span class="emoji-option">❤️</span>
                 <span class="emoji-option">🧡</span> <span class="emoji-option">💛</span> <span class="emoji-option">💚</span>
                 <span class="emoji-option">💙</span> <span class="emoji-option">💜</span> <span class="emoji-option">🖤</span>
                 <span class="emoji-option">🤍</span> <span class="emoji-option">🤎</span> <span class="emoji-option">💔</span>
+              </div>
             </div>
-        </div>
-        <div class="emoji-category">
-            <h4>🐶 Animaux & nature</h4>
-            <div class="emoji-grid">
+            <div class="emoji-category">
+              <h4>🐶 Animaux & nature</h4>
+              <div class="emoji-grid">
                 <span class="emoji-option">🐶</span> <span class="emoji-option">🐱</span> <span class="emoji-option">🐭</span>
                 <span class="emoji-option">🐹</span> <span class="emoji-option">🐰</span> <span class="emoji-option">🦊</span>
                 <span class="emoji-option">🐻</span> <span class="emoji-option">🐼</span> <span class="emoji-option">🐨</span>
                 <span class="emoji-option">🐸</span> <span class="emoji-option">🐒</span> <span class="emoji-option">🐔</span>
                 <span class="emoji-option">🐧</span> <span class="emoji-option">🐦</span> <span class="emoji-option">🐴</span>
                 <span class="emoji-option">🐝</span> <span class="emoji-option">🌸</span> <span class="emoji-option">🌺</span>
+              </div>
             </div>
-        </div>
-        <div class="emoji-category">
-            <h4>🎉 Objets & activités</h4>
-            <div class="emoji-grid">
+            <div class="emoji-category">
+              <h4>🎉 Objets & activités</h4>
+              <div class="emoji-grid">
                 <span class="emoji-option">🎉</span> <span class="emoji-option">🎁</span> <span class="emoji-option">🎈</span>
                 <span class="emoji-option">⭐</span> <span class="emoji-option">🌟</span> <span class="emoji-option">🔥</span>
                 <span class="emoji-option">💡</span> <span class="emoji-option">📚</span> <span class="emoji-option">✏️</span>
                 <span class="emoji-option">📱</span> <span class="emoji-option">💻</span> <span class="emoji-option">🖥️</span>
                 <span class="emoji-option">⌨️</span> <span class="emoji-option">🖱️</span> <span class="emoji-option">📷</span>
                 <span class="emoji-option">🎥</span> <span class="emoji-option">🎬</span> <span class="emoji-option">🎵</span>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-        
-        <!-- Menu trois points -->
-<div id="three-dots-menu" class="three-dots-menu hidden">
-    <ul>
-        <li id="menu-register">📄 Fiche d'inscription</li>
-        <li id="menu-media">📁 Médias, liens et documents</li>
-        <li id="menu-search">🔍 Rechercher</li>
-        <li id="menu-theme">🎨 Thème de la conversation</li>
-        <li id="menu-clear">🗑️ Effacer le contenu</li>
-        <li id="menu-report">⚠️ Signaler</li>
-    </ul>
-</div>
 
-<!-- Modale d'inscription -->
-<div id="register-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>Inscription à l'IUG</h2>
-        <form id="register-form">
-            <input type="text" placeholder="Nom complet" required>
-            <input type="email" placeholder="Email" required>
-            <input type="tel" placeholder="Téléphone">
-            <select required>
+        <!-- Menu trois points -->
+        <div id="three-dots-menu" class="three-dots-menu hidden">
+          <ul>
+            <li id="menu-register">📄 Fiche d'inscription</li>
+            <li id="menu-media">📁 Médias, liens et documents</li>
+            <li id="menu-search">🔍 Rechercher</li>
+            <li id="menu-theme">🎨 Thème de la conversation</li>
+            <li id="menu-clear">🗑️ Effacer le contenu</li>
+            <li id="menu-report">⚠️ Signaler</li>
+          </ul>
+        </div>
+
+        <!-- Modale d'inscription -->
+        <div id="register-modal" class="modal hidden">
+          <div class="modal-content">
+            <h2>Inscription à l'IUG</h2>
+            <form id="register-form">
+              <input type="text" placeholder="Nom complet" required>
+              <input type="email" placeholder="Email" required>
+              <input type="tel" placeholder="Téléphone">
+              <select required>
                 <option value="">Choisissez votre filière</option>
                 <option>ESG (Gestion)</option>
                 <option>ISTA (Informatique)</option>
                 <option>ISA (Agronomie)</option>
-            </select>
-            <button type="submit">Envoyer la demande</button>
-            <button type="button" id="close-register">Fermer</button>
-        </form>
-        <p id="register-feedback" class="feedback"></p>
-    </div>
-</div>
+              </select>
+              <button type="submit">Envoyer la demande</button>
+              <button type="button" id="close-register">Fermer</button>
+            </form>
+            <p id="register-feedback" class="feedback"></p>
+          </div>
+        </div>
 
-<!-- Panneau de recherche (caché par défaut) -->
-<div id="search-panel" class="search-panel hidden">
-    <input type="text" id="search-input" placeholder="Rechercher un message...">
-    <button id="search-close">×</button>
-    <div id="search-results-count"></div>
-</div>
+        <!-- Panneau de recherche flottant -->
+        <div id="search-panel" class="search-panel hidden">
+          <input type="text" id="search-input" placeholder="Rechercher un message...">
+          <button id="search-close">×</button>
+          <div id="search-results-count"></div>
+        </div>
 
-<!-- Panneau de thème de conversation -->
-<div id="theme-panel" class="theme-panel hidden">
-    <h3>Personnaliser le chat</h3>
-    <label>Arrière‑plan</label>
-    <div class="color-options">
-        <div class="color-option" data-bg="#f6f9fc" data-bubble="#e5e5ea" data-user-bubble="#3a7ca5">Défaut</div>
-        <div class="color-option" data-bg="#0f172a" data-bubble="#1e293b" data-user-bubble="#2563eb">Sombre</div>
-        <div class="color-option" data-bg="#fff7ed" data-bubble="#fed7aa" data-user-bubble="#ea580c">Chaleureux</div>
-        <div class="color-option" data-bg="#f0fdf4" data-bubble="#bbf7d0" data-user-bubble="#15803d">Nature</div>
-    </div>
-    <button id="theme-reset">Réinitialiser</button>
-    <button id="theme-close">Fermer</button>
-</div>
-        
+        <!-- Panneau de thème de conversation -->
+        <div id="theme-panel" class="theme-panel hidden">
+          <h3>Personnaliser le chat</h3>
+          <div class="color-options">
+            <div class="color-option" data-bg="#f6f9fc" data-bubble="#e5e5ea" data-user-bubble="#3a7ca5">Défaut</div>
+            <div class="color-option" data-bg="#0f172a" data-bubble="#1e293b" data-user-bubble="#2563eb">Sombre</div>
+            <div class="color-option" data-bg="#fff7ed" data-bubble="#fed7aa" data-user-bubble="#ea580c">Chaleureux</div>
+            <div class="color-option" data-bg="#f0fdf4" data-bubble="#bbf7d0" data-user-bubble="#15803d">Nature</div>
+          </div>
+          <button id="theme-reset">Réinitialiser</button>
+          <button id="theme-close">Fermer</button>
+        </div>
       </div>
     </div>
 
@@ -395,11 +393,10 @@
       </div>
       <p class="footer-institution">Institut Universitaire du Golfe de Guinée</p>
       <p>© 2025 • Tous droits réservés</p>
-      <p class="contributeurs">🏆 Contributeurs du mois : Marie K., Jean K., Amadou D.</p>
     </footer>
   </div>
 
-  <!-- ÉLÉMENTS FLOTTANTS (communs) -->
+  <!-- Éléments flottants -->
   <button id="helpButton" class="help-float" aria-label="Aide">
     <i class="fas fa-question"></i>
   </button>
