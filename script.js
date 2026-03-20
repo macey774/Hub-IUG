@@ -20,8 +20,10 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ===== GESTION DU THÈME =====
-const themeToggles = document.querySelectorAll("#themeToggle, #mobileThemeToggle");
+// ===== GESTION DU THÈME GLOBAL =====
+const themeToggles = document.querySelectorAll(
+  "#themeToggle, #mobileThemeToggle"
+);
 const themeIcons = {
   desktop: document.querySelector("#themeToggle i"),
   mobile: document.querySelector("#mobileThemeToggle i")
@@ -36,7 +38,9 @@ function setThemeIcon(isDark) {
   }
   const mobileThemeText = document.querySelector("#mobileThemeToggle");
   if (mobileThemeText) {
-    mobileThemeText.innerHTML = `<i class="fas ${isDark ? "fa-moon" : "fa-sun"}"></i> ${isDark ? "Mode clair" : "Mode sombre"}`;
+    mobileThemeText.innerHTML = `<i class="fas ${
+      isDark ? "fa-moon" : "fa-sun"
+    }"></i> ${isDark ? "Mode clair" : "Mode sombre"}`;
   }
 }
 
@@ -65,7 +69,9 @@ langToggles.forEach((toggle) => {
 });
 
 // ===== GESTION DE LA CONNEXION =====
-const loginBtns = document.querySelectorAll("#loginBtn, #loginBtnChat, #mobileLogin");
+const loginBtns = document.querySelectorAll(
+  "#loginBtn, #loginBtnChat, #mobileLogin"
+);
 const loginModal = document.getElementById("loginModal");
 const loginClose = document.getElementById("loginClose");
 const loginSubmit = document.getElementById("loginSubmit");
@@ -250,6 +256,7 @@ function showChatFullscreen() {
   chatFullscreen.classList.remove("hidden");
   document.body.classList.add("chat-active");
   loadChatMessages();
+  loadChatTheme();
 }
 
 orientiugAccessBtn.addEventListener("click", (e) => {
@@ -294,7 +301,6 @@ const threeDotsBtn = document.getElementById("three-dots-btn");
 let messages = [];
 let messageCount = parseInt(localStorage.getItem("messageCount")) || 0;
 
-// Auto‑resize du textarea
 function autoResizeTextarea() {
   chatInput.style.height = "auto";
   chatInput.style.height = chatInput.scrollHeight + "px";
@@ -316,7 +322,11 @@ function getDateLabel(date) {
   if (diffDays < 7 && diffDays > 0) {
     return new Date(date).toLocaleDateString("fr-FR", { weekday: "long" });
   }
-  return new Date(date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(date).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
 }
 
 function addDateSeparator(date) {
@@ -351,7 +361,10 @@ function addMessage(text, isUser = false, timestamp = null) {
 
   const time = document.createElement("div");
   time.classList.add("message-time");
-  time.innerText = messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  time.innerText = messageDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   bubble.appendChild(time);
   wrapper.appendChild(bubble);
@@ -415,7 +428,10 @@ function loadChatMessages() {
         bubble.innerText = msg.text;
         const time = document.createElement("div");
         time.classList.add("message-time");
-        time.innerText = msgDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        time.innerText = msgDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
         bubble.appendChild(time);
         wrapper.appendChild(bubble);
         chatMessages.appendChild(wrapper);
@@ -432,7 +448,10 @@ function loadChatMessages() {
 
 function initDefaultMessage() {
   messages = [];
-  addMessage("Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.", false);
+  addMessage(
+    "Bonjour ! Je suis votre assistant d'orientation. Posez-moi une question sur les filières, les débouchés, ou laissez-moi vous guider.",
+    false
+  );
 }
 
 function updateSendButton() {
@@ -474,24 +493,44 @@ chatInput.addEventListener("keypress", (e) => {
 
 updateSendButton();
 
-emojiStickerBtn.addEventListener("click", () => {
-  showToast("Sélecteur d’émojis et stickers (simulé)");
+// ===== GESTION DES BOUTONS SANS TOAST =====
+emojiStickerBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  // Fermer le panneau de recherche si ouvert
+  if (searchActive) closeSearchPanel();
+  // Gérer l'ouverture/fermeture du sélecteur d'émojis
+  if (emojiPickerVisible) {
+    closeEmojiPicker();
+  } else {
+    openEmojiPicker();
+  }
 });
 
 attachDocBtn.addEventListener("click", () => {
   toolbar.classList.toggle("hidden");
+  if (searchActive) closeSearchPanel();
 });
 
 cameraBtn.addEventListener("click", () => {
   showToast("Prise de photo (simulée)");
+  if (searchActive) closeSearchPanel();
 });
 
 voiceCallBtn.addEventListener("click", () => {
   showToast("Appel vocal (simulé)");
+  if (searchActive) closeSearchPanel();
 });
 
-threeDotsBtn.addEventListener("click", () => {
-  showToast("Menu à trois points (simulé)");
+threeDotsBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (searchActive) closeSearchPanel();
+  if (menuVisible) {
+    threeDotsMenu.classList.add("hidden");
+    menuVisible = false;
+  } else {
+    threeDotsMenu.classList.remove("hidden");
+    menuVisible = true;
+  }
 });
 
 document.addEventListener("click", (e) => {
@@ -507,34 +546,28 @@ document.querySelectorAll(".chat-toolbar button").forEach((btn) => {
   });
 });
 
-// ===== TOAST NOTIFICATION (un seul à la fois, avec animation) =====
+// ===== TOAST NOTIFICATION =====
 let activeToast = null;
 let hideTimeout = null;
 
 function showToast(message, duration = 2000) {
   const container = document.getElementById("toast-container");
-  
-  // Supprimer immédiatement le toast actuel s'il existe
+
   if (activeToast) {
-    // Annuler le timeout de disparition programmé
     if (hideTimeout) clearTimeout(hideTimeout);
     activeToast.remove();
     activeToast = null;
   }
-  
-  // Créer le nouveau toast
+
   const toast = document.createElement("div");
   toast.className = "toast";
   toast.textContent = message;
-  
+
   container.classList.remove("hidden");
   container.appendChild(toast);
   activeToast = toast;
-  
-  // Forcer le reflow pour que l'animation d'apparition se déclenche
   toast.offsetHeight;
-  
-  // Programmer la disparition
+
   hideTimeout = setTimeout(() => {
     if (activeToast === toast) {
       toast.classList.add("hide");
@@ -546,11 +579,350 @@ function showToast(message, duration = 2000) {
             container.classList.add("hidden");
           }
         }
-      }, 300); // correspond à la durée de l'animation CSS
+      }, 300);
       hideTimeout = null;
     }
   }, duration);
 }
+
+// ===== GESTION DU SÉLECTEUR D'ÉMOJIS =====
+const emojiPicker = document.getElementById("emoji-picker");
+const recentCategory = document.getElementById("recent-category");
+const recentGrid = document.getElementById("recent-grid");
+let emojiPickerVisible = false;
+let recentEmojis = JSON.parse(localStorage.getItem("recentEmojis")) || [];
+
+function updateRecentSection() {
+  if (recentEmojis.length === 0) {
+    recentCategory.style.display = "none";
+    return;
+  }
+  recentCategory.style.display = "block";
+  recentGrid.innerHTML = "";
+  recentEmojis.forEach((emoji) => {
+    const span = document.createElement("span");
+    span.className = "emoji-option";
+    span.textContent = emoji;
+    span.addEventListener("click", (e) => {
+      e.stopPropagation();
+      insertEmoji(emoji);
+    });
+    recentGrid.appendChild(span);
+  });
+}
+
+function addToRecent(emoji) {
+  const index = recentEmojis.indexOf(emoji);
+  if (index !== -1) recentEmojis.splice(index, 1);
+  recentEmojis.unshift(emoji);
+  if (recentEmojis.length > 12) recentEmojis.pop();
+  localStorage.setItem("recentEmojis", JSON.stringify(recentEmojis));
+  updateRecentSection();
+}
+
+function insertEmoji(emoji) {
+  const cursorPos = chatInput.selectionStart;
+  const text = chatInput.value;
+  const newText = text.slice(0, cursorPos) + emoji + text.slice(cursorPos);
+  chatInput.value = newText;
+  chatInput.focus();
+  chatInput.setSelectionRange(
+    cursorPos + emoji.length,
+    cursorPos + emoji.length
+  );
+  autoResizeTextarea();
+  updateSendButton();
+  addToRecent(emoji);
+  closeEmojiPicker();
+}
+
+function closeEmojiPicker() {
+  if (emojiPickerVisible) {
+    emojiPicker.classList.add("hidden");
+    emojiPickerVisible = false;
+  }
+}
+
+function openEmojiPicker() {
+  if (!emojiPickerVisible) {
+    emojiPicker.classList.remove("hidden");
+    emojiPickerVisible = true;
+  }
+}
+
+document.querySelectorAll(".emoji-option").forEach((emojiSpan) => {
+  emojiSpan.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const emoji = emojiSpan.textContent;
+    insertEmoji(emoji);
+  });
+});
+
+document.addEventListener("click", (e) => {
+  if (
+    emojiPickerVisible &&
+    !emojiStickerBtn.contains(e.target) &&
+    !emojiPicker.contains(e.target)
+  ) {
+    closeEmojiPicker();
+  }
+});
+
+updateRecentSection();
+
+// ===== GESTION DU MENU TROIS POINTS =====
+const threeDotsMenu = document.getElementById("three-dots-menu");
+let menuVisible = false;
+
+document.addEventListener("click", (e) => {
+  if (
+    menuVisible &&
+    !threeDotsBtn.contains(e.target) &&
+    !threeDotsMenu.contains(e.target)
+  ) {
+    threeDotsMenu.classList.add("hidden");
+    menuVisible = false;
+  }
+});
+
+// Options du menu
+const menuRegister = document.getElementById("menu-register");
+const menuMedia = document.getElementById("menu-media");
+const menuSearch = document.getElementById("menu-search");
+const menuTheme = document.getElementById("menu-theme");
+const menuClear = document.getElementById("menu-clear");
+const menuReport = document.getElementById("menu-report");
+
+// 1. Fiche d'inscription
+menuRegister.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  if (searchActive) closeSearchPanel();
+  document.getElementById("register-modal").classList.remove("hidden");
+});
+
+const registerModal = document.getElementById("register-modal");
+const closeRegister = document.getElementById("close-register");
+const registerForm = document.getElementById("register-form");
+const registerFeedback = document.getElementById("register-feedback");
+
+closeRegister.addEventListener("click", () => {
+  registerModal.classList.add("hidden");
+});
+registerForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  registerFeedback.textContent =
+    "Demande envoyée ! Vous serez contacté(e) prochainement.";
+  setTimeout(() => {
+    registerModal.classList.add("hidden");
+    registerFeedback.textContent = "";
+    registerForm.reset();
+  }, 2000);
+});
+
+// 2. Médias, liens et documents
+menuMedia.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  if (searchActive) closeSearchPanel();
+  showToast("Fonctionnalité à venir : partage de médias et documents.");
+});
+
+// 3. Recherche (panneau flottant)
+const searchPanel = document.getElementById("search-panel");
+const searchInput = document.getElementById("search-input");
+const searchClose = document.getElementById("search-close");
+const searchResultsCount = document.getElementById("search-results-count");
+let searchActive = false;
+
+function clearSearchHighlights() {
+  document.querySelectorAll(".search-highlight").forEach((el) => {
+    const parent = el.parentNode;
+    parent.replaceChild(document.createTextNode(el.textContent), el);
+    parent.normalize();
+  });
+}
+
+function highlightSearch(term) {
+  if (!term) return 0;
+  const messages = document.querySelectorAll(
+    "#chat-fullscreen-messages .message-bubble"
+  );
+  let count = 0;
+  messages.forEach((bubble) => {
+    const originalText = bubble.childNodes[0]?.nodeValue || bubble.innerText;
+    if (originalText.toLowerCase().includes(term.toLowerCase())) {
+      const regex = new RegExp(
+        `(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+        "gi"
+      );
+      const newHtml = originalText.replace(
+        regex,
+        '<span class="search-highlight">$1</span>'
+      );
+      bubble.innerHTML = newHtml;
+      count++;
+    }
+  });
+  return count;
+}
+
+function openSearchPanel() {
+  if (emojiPickerVisible) closeEmojiPicker();
+  if (themePanelVisible) closeThemePanel();
+  searchPanel.classList.remove("hidden");
+  searchInput.value = "";
+  searchResultsCount.textContent = "";
+  clearSearchHighlights();
+  searchInput.focus();
+  searchActive = true;
+}
+
+function closeSearchPanel() {
+  searchPanel.classList.add("hidden");
+  clearSearchHighlights();
+  searchActive = false;
+}
+
+searchInput.addEventListener("input", () => {
+  const term = searchInput.value.trim();
+  clearSearchHighlights();
+  if (term === "") {
+    searchResultsCount.textContent = "";
+    return;
+  }
+  const count = highlightSearch(term);
+  searchResultsCount.textContent = `${count} résultat(s)`;
+});
+
+searchClose.addEventListener("click", closeSearchPanel);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && searchActive) {
+    closeSearchPanel();
+  }
+});
+
+menuSearch.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  openSearchPanel();
+});
+
+// 4. Thème de la conversation
+const themePanel = document.getElementById("theme-panel");
+let themePanelVisible = false;
+
+function closeThemePanel() {
+  if (themePanelVisible) {
+    themePanel.classList.add("hidden");
+    themePanelVisible = false;
+  }
+}
+
+function openThemePanel() {
+  if (searchActive) closeSearchPanel();
+  if (emojiPickerVisible) closeEmojiPicker();
+  themePanel.classList.remove("hidden");
+  themePanelVisible = true;
+}
+
+menuTheme.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  if (themePanelVisible) {
+    closeThemePanel();
+  } else {
+    openThemePanel();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (
+    themePanelVisible &&
+    !menuTheme.contains(e.target) &&
+    !themePanel.contains(e.target)
+  ) {
+    closeThemePanel();
+  }
+});
+
+const themeOptions = document.querySelectorAll(".color-option");
+const themeReset = document.getElementById("theme-reset");
+const themeClose = document.getElementById("theme-close");
+
+function applyTheme(bgColor, bubbleColor, userBubbleColor) {
+  const chatContainer = document.querySelector(".orientiug-chat-fullscreen");
+  const botBubbles = document.querySelectorAll(
+    ".message-wrapper.bot .message-bubble"
+  );
+  const userBubbles = document.querySelectorAll(
+    ".message-wrapper.user .message-bubble"
+  );
+
+  chatContainer.style.background = bgColor;
+  botBubbles.forEach((b) => (b.style.background = bubbleColor));
+  userBubbles.forEach((b) => (b.style.background = userBubbleColor));
+  localStorage.setItem(
+    "chatTheme",
+    JSON.stringify({ bgColor, bubbleColor, userBubbleColor })
+  );
+}
+
+function loadChatTheme() {
+  const saved = localStorage.getItem("chatTheme");
+  if (saved) {
+    const theme = JSON.parse(saved);
+    applyTheme(theme.bgColor, theme.bubbleColor, theme.userBubbleColor);
+  }
+}
+
+themeOptions.forEach((opt) => {
+  opt.addEventListener("click", () => {
+    const bg = opt.dataset.bg;
+    const bubble = opt.dataset.bubble;
+    const userBubble = opt.dataset.userBubble;
+    applyTheme(bg, bubble, userBubble);
+    closeThemePanel();
+  });
+});
+
+themeReset.addEventListener("click", () => {
+  document.querySelector(".orientiug-chat-fullscreen").style.background = "";
+  document
+    .querySelectorAll(".message-bubble")
+    .forEach((b) => (b.style.background = ""));
+  localStorage.removeItem("chatTheme");
+  closeThemePanel();
+});
+
+themeClose.addEventListener("click", closeThemePanel);
+
+// 5. Effacer le contenu
+menuClear.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  if (searchActive) closeSearchPanel();
+  if (
+    confirm(
+      "Voulez-vous vraiment effacer tous les messages de cette conversation ?"
+    )
+  ) {
+    chatMessages.innerHTML = "";
+    localStorage.removeItem("orientiugChatMessages");
+    messages = [];
+    initDefaultMessage();
+    showToast("Conversation effacée.");
+  }
+});
+
+// 6. Signaler
+menuReport.addEventListener("click", () => {
+  threeDotsMenu.classList.add("hidden");
+  menuVisible = false;
+  if (searchActive) closeSearchPanel();
+  showToast("Merci de votre signalement. Nous traiterons votre demande.");
+});
 
 // ===== FERMETURE DES MODALES AU CLIC SUR LE FOND =====
 window.addEventListener("click", (e) => {
@@ -558,351 +930,3 @@ window.addEventListener("click", (e) => {
     loginModal.classList.add("hidden");
   }
 });
-
-
-// ===== GESTION DU SÉLECTEUR D'ÉMOJIS =====
-const emojiPicker = document.getElementById('emoji-picker');
-const recentCategory = document.getElementById('recent-category');
-const recentGrid = document.getElementById('recent-grid');
-let emojiPickerVisible = false;
-
-// Stockage des récents
-let recentEmojis = JSON.parse(localStorage.getItem('recentEmojis')) || [];
-
-// Met à jour l'affichage de la section "Récent"
-function updateRecentSection() {
-    if (recentEmojis.length === 0) {
-        recentCategory.style.display = 'none';
-        return;
-    }
-    recentCategory.style.display = 'block';
-    recentGrid.innerHTML = '';
-    recentEmojis.forEach(emoji => {
-        const span = document.createElement('span');
-        span.className = 'emoji-option';
-        span.textContent = emoji;
-        span.addEventListener('click', (e) => {
-            e.stopPropagation();
-            insertEmoji(emoji);
-        });
-        recentGrid.appendChild(span);
-    });
-}
-
-// Ajouter un émoji aux récents (maximum 12)
-function addToRecent(emoji) {
-    // Supprimer s'il existe déjà
-    const index = recentEmojis.indexOf(emoji);
-    if (index !== -1) recentEmojis.splice(index, 1);
-    // Ajouter en tête
-    recentEmojis.unshift(emoji);
-    // Limiter à 12
-    if (recentEmojis.length > 12) recentEmojis.pop();
-    localStorage.setItem('recentEmojis', JSON.stringify(recentEmojis));
-    updateRecentSection();
-}
-
-// Insérer l'émoji dans le textarea
-function insertEmoji(emoji) {
-    const cursorPos = chatInput.selectionStart;
-    const text = chatInput.value;
-    const newText = text.slice(0, cursorPos) + emoji + text.slice(cursorPos);
-    chatInput.value = newText;
-    chatInput.focus();
-    chatInput.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
-    autoResizeTextarea();
-    updateSendButton(); // met à jour l'icône du bouton
-    // Ajouter aux récents
-    addToRecent(emoji);
-    // Fermer immédiatement le sélecteur (sans animation)
-    closeEmojiPicker();
-}
-
-// Fermeture immédiate (sans transition)
-function closeEmojiPicker() {
-    if (emojiPickerVisible) {
-        emojiPicker.classList.add('hidden');
-        emojiPickerVisible = false;
-    }
-}
-
-// Ouverture avec animation
-function openEmojiPicker() {
-    if (!emojiPickerVisible) {
-        emojiPicker.classList.remove('hidden');
-        emojiPickerVisible = true;
-    }
-}
-
-// Gestion du bouton d'ouverture
-emojiStickerBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (emojiPickerVisible) {
-        closeEmojiPicker();
-    } else {
-        openEmojiPicker();
-    }
-});
-
-// Clic sur un émoji (dans les catégories statiques)
-document.querySelectorAll('.emoji-option').forEach(emojiSpan => {
-    emojiSpan.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const emoji = emojiSpan.textContent;
-        insertEmoji(emoji);
-    });
-});
-
-// Fermer si on clique ailleurs
-document.addEventListener('click', (e) => {
-    if (emojiPickerVisible &&
-        !emojiStickerBtn.contains(e.target) &&
-        !emojiPicker.contains(e.target)) {
-        closeEmojiPicker();
-    }
-});
-
-// Initialiser la section récents
-updateRecentSection();
-
-
-// ===== GESTION DU MENU TROIS POINTS =====
-const threeDotsMenu = document.getElementById('three-dots-menu');
-let menuVisible = false;
-
-threeDotsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (menuVisible) {
-        threeDotsMenu.classList.add('hidden');
-        menuVisible = false;
-    } else {
-        threeDotsMenu.classList.remove('hidden');
-        menuVisible = true;
-    }
-});
-
-// Fermer le menu si on clique ailleurs
-document.addEventListener('click', (e) => {
-    if (menuVisible && !threeDotsBtn.contains(e.target) && !threeDotsMenu.contains(e.target)) {
-        threeDotsMenu.classList.add('hidden');
-        menuVisible = false;
-    }
-});
-
-// Options du menu
-const menuRegister = document.getElementById('menu-register');
-const menuMedia = document.getElementById('menu-media');
-const menuSearch = document.getElementById('menu-search');
-const menuTheme = document.getElementById('menu-theme');
-const menuClear = document.getElementById('menu-clear');
-const menuReport = document.getElementById('menu-report');
-
-// 1. Fiche d'inscription
-menuRegister.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    document.getElementById('register-modal').classList.remove('hidden');
-});
-
-// Gestion du formulaire d'inscription
-const registerModal = document.getElementById('register-modal');
-const closeRegister = document.getElementById('close-register');
-const registerForm = document.getElementById('register-form');
-const registerFeedback = document.getElementById('register-feedback');
-
-closeRegister.addEventListener('click', () => {
-    registerModal.classList.add('hidden');
-});
-registerForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    // Simuler l'envoi
-    registerFeedback.textContent = "Demande envoyée ! Vous serez contacté(e) prochainement.";
-    setTimeout(() => {
-        registerModal.classList.add('hidden');
-        registerFeedback.textContent = "";
-        registerForm.reset();
-    }, 2000);
-});
-
-// 2. Médias, liens et documents
-menuMedia.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    showToast("Fonctionnalité à venir : partage de médias et documents.");
-});
-
-// 3. Rechercher
-const searchPanel = document.getElementById('search-panel');
-const searchInput = document.getElementById('search-input');
-const searchClose = document.getElementById('search-close');
-const searchResultsCount = document.getElementById('search-results-count');
-let searchActive = false;
-
-function clearSearchHighlights() {
-    document.querySelectorAll('.search-highlight').forEach(el => {
-        const parent = el.parentNode;
-        parent.replaceChild(document.createTextNode(el.textContent), el);
-        parent.normalize();
-    });
-}
-
-function highlightSearch(term) {
-    if (!term) return 0;
-    const messages = document.querySelectorAll('#chat-fullscreen-messages .message-bubble');
-    let count = 0;
-    messages.forEach(bubble => {
-        const originalText = bubble.childNodes[0]?.nodeValue || bubble.innerText;
-        if (originalText.toLowerCase().includes(term.toLowerCase())) {
-            const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const newHtml = originalText.replace(regex, '<span class="search-highlight">$1</span>');
-            bubble.innerHTML = newHtml;
-            count++;
-        }
-    });
-    return count;
-}
-
-menuSearch.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    if (searchActive) {
-        // masquer le panneau
-        searchPanel.classList.add('hidden');
-        clearSearchHighlights();
-        searchActive = false;
-    } else {
-        searchPanel.classList.remove('hidden');
-        searchInput.value = '';
-        searchResultsCount.textContent = '';
-        clearSearchHighlights();
-        searchActive = true;
-        searchInput.focus();
-    }
-});
-
-searchInput.addEventListener('input', () => {
-    clearSearchHighlights();
-    const term = searchInput.value.trim();
-    if (term === '') {
-        searchResultsCount.textContent = '';
-        return;
-    }
-    const count = highlightSearch(term);
-    searchResultsCount.textContent = `${count} résultat(s)`;
-});
-
-searchClose.addEventListener('click', () => {
-    searchPanel.classList.add('hidden');
-    clearSearchHighlights();
-    searchActive = false;
-});
-
-// 4. Thème de la conversation
-const themePanel = document.getElementById('theme-panel');
-let themePanelVisible = false;
-
-menuTheme.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    if (themePanelVisible) {
-        themePanel.classList.add('hidden');
-        themePanelVisible = false;
-    } else {
-        themePanel.classList.remove('hidden');
-        themePanelVisible = true;
-    }
-});
-
-// Fermer le panneau thème si on clique ailleurs
-document.addEventListener('click', (e) => {
-    if (themePanelVisible && !menuTheme.contains(e.target) && !themePanel.contains(e.target)) {
-        themePanel.classList.add('hidden');
-        themePanelVisible = false;
-    }
-});
-
-// Appliquer un thème
-const themeOptions = document.querySelectorAll('.color-option');
-const themeReset = document.getElementById('theme-reset');
-const themeClose = document.getElementById('theme-close');
-
-function applyTheme(bgColor, bubbleColor, userBubbleColor) {
-    const chatContainer = document.querySelector('.orientiug-chat-fullscreen');
-    const bubbles = document.querySelectorAll('.message-bubble');
-    const userBubbles = document.querySelectorAll('.message-wrapper.user .message-bubble');
-    const botBubbles = document.querySelectorAll('.message-wrapper.bot .message-bubble');
-    
-    chatContainer.style.background = bgColor;
-    botBubbles.forEach(b => b.style.background = bubbleColor);
-    userBubbles.forEach(b => b.style.background = userBubbleColor);
-    
-    // Sauvegarder
-    localStorage.setItem('chatTheme', JSON.stringify({ bgColor, bubbleColor, userBubbleColor }));
-}
-
-themeOptions.forEach(opt => {
-    opt.addEventListener('click', () => {
-        const bg = opt.dataset.bg;
-        const bubble = opt.dataset.bubble;
-        const userBubble = opt.dataset.userBubble;
-        applyTheme(bg, bubble, userBubble);
-        themePanel.classList.add('hidden');
-        themePanelVisible = false;
-    });
-});
-
-themeReset.addEventListener('click', () => {
-    // Réinitialiser aux valeurs par défaut (variables CSS)
-    document.querySelector('.orientiug-chat-fullscreen').style.background = '';
-    document.querySelectorAll('.message-bubble').forEach(b => b.style.background = '');
-    localStorage.removeItem('chatTheme');
-    themePanel.classList.add('hidden');
-    themePanelVisible = false;
-});
-
-themeClose.addEventListener('click', () => {
-    themePanel.classList.add('hidden');
-    themePanelVisible = false;
-});
-
-// Charger le thème sauvegardé au démarrage du chat
-function loadChatTheme() {
-    const saved = localStorage.getItem('chatTheme');
-    if (saved) {
-        const theme = JSON.parse(saved);
-        applyTheme(theme.bgColor, theme.bubbleColor, theme.userBubbleColor);
-    }
-}
-// Appeler cette fonction quand le chat s'ouvre (dans showChatFullscreen)
-// On l'ajoutera dans showChatFullscreen
-
-// 5. Effacer le contenu
-menuClear.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    if (confirm("Voulez-vous vraiment effacer tous les messages de cette conversation ?")) {
-        // Vider le DOM
-        chatMessages.innerHTML = '';
-        // Vider localStorage
-        localStorage.removeItem('orientiugChatMessages');
-        messages = [];
-        // Remettre le message de bienvenue
-        initDefaultMessage();
-        showToast("Conversation effacée.");
-    }
-});
-
-// 6. Signaler
-menuReport.addEventListener('click', () => {
-    threeDotsMenu.classList.add('hidden');
-    menuVisible = false;
-    showToast("Merci de votre signalement. Nous traiterons votre demande.");
-});
-
-// Intégration du chargement du thème dans showChatFullscreen
-// On modifie showChatFullscreen pour inclure loadChatTheme()
-const originalShowChatFullscreen = showChatFullscreen;
-showChatFullscreen = function() {
-    originalShowChatFullscreen();
-    loadChatTheme();
-};
