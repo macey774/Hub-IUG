@@ -209,7 +209,7 @@ document.querySelectorAll(".card:not(#orientiug-card) .btn").forEach((btn) => {
   });
 });
 
-// ===== GESTION DE LA NAVIGATION ORIENTIUG =====
+// ===== GESTION DE LA NAVIGATION ENTRE LES SECTIONS =====
 const orientiugCard = document.getElementById("orientiug-card");
 const orientiugAccessBtn = document.getElementById("orientiug-access");
 const hubSection = document.getElementById("hub-section");
@@ -223,6 +223,7 @@ const headerTitle = document.getElementById("header-title");
 const logoArea = document.querySelector(".logo-area");
 const hubActions = document.getElementById("hub-actions");
 const chatActions = document.getElementById("chat-actions");
+const inscriptionSection = document.getElementById("inscription-section");
 
 function enterOrientIUG() {
   window.scrollTo(0, 0);
@@ -230,6 +231,7 @@ function enterOrientIUG() {
   orientiugSection.classList.remove("hidden");
   presentationDiv.classList.remove("hidden");
   chatFullscreen.classList.add("hidden");
+  inscriptionSection.classList.add("hidden");
   headerIcon.className = "fas fa-compass";
   headerTitle.textContent = "OrientIUG";
   backButton.classList.remove("hidden");
@@ -242,6 +244,7 @@ function returnToHub() {
   window.scrollTo(0, 0);
   hubSection.classList.remove("hidden");
   orientiugSection.classList.add("hidden");
+  inscriptionSection.classList.add("hidden");
   headerIcon.className = "fas fa-cubes";
   headerTitle.textContent = "Hub IUG";
   backButton.classList.add("hidden");
@@ -259,6 +262,34 @@ function showChatFullscreen() {
   loadChatTheme();
 }
 
+function enterInscriptionPage() {
+  window.scrollTo(0, 0);
+  hubSection.classList.add("hidden");
+  orientiugSection.classList.add("hidden");
+  inscriptionSection.classList.remove("hidden");
+  headerIcon.className = "fas fa-pen-alt";
+  headerTitle.textContent = "Fiche d'inscription";
+  backButton.classList.remove("hidden");
+  document.body.classList.remove("chat-active");
+  hubActions.classList.add("hidden");
+  chatActions.classList.add("hidden");
+}
+
+function exitInscriptionPage() {
+  inscriptionSection.classList.add("hidden");
+  hubSection.classList.remove("hidden");
+  headerIcon.className = "fas fa-cubes";
+  headerTitle.textContent = "Hub IUG";
+  backButton.classList.add("hidden");
+  hubActions.classList.remove("hidden");
+  chatActions.classList.add("hidden");
+  // Réinitialiser le formulaire
+  const form = document.getElementById("inscription-form");
+  if (form) form.reset();
+  const feedback = document.getElementById("inscription-feedback");
+  if (feedback) feedback.textContent = "";
+}
+
 orientiugAccessBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   enterOrientIUG();
@@ -271,15 +302,21 @@ orientiugCard.addEventListener("click", (e) => {
 
 goToChatBtn.addEventListener("click", showChatFullscreen);
 
-backButton.addEventListener("click", () => {
-  if (!chatFullscreen.classList.contains("hidden")) {
+// Gestion du bouton retour (unique)
+function handleBackButton() {
+  if (!inscriptionSection.classList.contains("hidden")) {
+    exitInscriptionPage();
+  } else if (!chatFullscreen.classList.contains("hidden")) {
     returnToHub();
   } else if (!presentationDiv.classList.contains("hidden")) {
+    returnToHub();
+  } else if (!orientiugSection.classList.contains("hidden")) {
     returnToHub();
   } else {
     returnToHub();
   }
-});
+}
+backButton.addEventListener("click", handleBackButton);
 
 logoArea.addEventListener("click", (e) => {
   if (e.target.closest(".back-button")) return;
@@ -496,9 +533,7 @@ updateSendButton();
 // ===== GESTION DES BOUTONS SANS TOAST =====
 emojiStickerBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-  // Fermer le panneau de recherche si ouvert
   if (searchActive) closeSearchPanel();
-  // Gérer l'ouverture/fermeture du sélecteur d'émojis
   if (emojiPickerVisible) {
     closeEmojiPicker();
   } else {
@@ -685,7 +720,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// Options du menu
 const menuRegister = document.getElementById("menu-register");
 const menuMedia = document.getElementById("menu-media");
 const menuSearch = document.getElementById("menu-search");
@@ -698,26 +732,7 @@ menuRegister.addEventListener("click", () => {
   threeDotsMenu.classList.add("hidden");
   menuVisible = false;
   if (searchActive) closeSearchPanel();
-  document.getElementById("register-modal").classList.remove("hidden");
-});
-
-const registerModal = document.getElementById("register-modal");
-const closeRegister = document.getElementById("close-register");
-const registerForm = document.getElementById("register-form");
-const registerFeedback = document.getElementById("register-feedback");
-
-closeRegister.addEventListener("click", () => {
-  registerModal.classList.add("hidden");
-});
-registerForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  registerFeedback.textContent =
-    "Demande envoyée ! Vous serez contacté(e) prochainement.";
-  setTimeout(() => {
-    registerModal.classList.add("hidden");
-    registerFeedback.textContent = "";
-    registerForm.reset();
-  }, 2000);
+  enterInscriptionPage();
 });
 
 // 2. Médias, liens et documents
@@ -924,9 +939,426 @@ menuReport.addEventListener("click", () => {
   showToast("Merci de votre signalement. Nous traiterons votre demande.");
 });
 
+// ===== PAGE INSCRIPTION (formulaire) =====
+const inscriptionForm = document.getElementById("inscription-form");
+const inscriptionClose = document.getElementById("inscription-close");
+const inscriptionFeedback = document.getElementById("inscription-feedback");
+
+if (inscriptionForm) {
+  inscriptionForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    inscriptionFeedback.textContent =
+      "Demande envoyée ! Vous serez contacté(e) prochainement.";
+    setTimeout(() => {
+      exitInscriptionPage();
+      inscriptionFeedback.textContent = "";
+      inscriptionForm.reset();
+    }, 2000);
+  });
+}
+
+if (inscriptionClose) {
+  inscriptionClose.addEventListener("click", exitInscriptionPage);
+}
+
+// ===== SPLASH SCREEN (cubes formant l'icône) =====
+const splash = document.getElementById("splash-screen");
+const cubes = document.querySelectorAll(".cube");
+const cubeGroup = document.querySelector(".cube-group");
+const splashText = document.querySelector(".splash-text");
+
+let cubesArrived = 0;
+let animationCompleted = false;
+
+function onCubeAnimationEnd() {
+  if (animationCompleted) return;
+  cubesArrived++;
+  if (cubesArrived === cubes.length) {
+    animationCompleted = true;
+    cubeGroup.classList.add("assembled");
+    setTimeout(() => {
+      cubeGroup.classList.add("slide-left");
+      splashText.classList.remove("hidden");
+      splashText.classList.add("show");
+      setTimeout(() => {
+        splash.classList.add("hide");
+        setTimeout(() => {
+          splash.remove();
+        }, 400);
+      }, 500);
+    }, 200);
+  }
+}
+
+cubes.forEach((cube) => {
+  cube.addEventListener("animationend", onCubeAnimationEnd);
+});
+
+setTimeout(() => {
+  if (!animationCompleted) {
+    cubeGroup.classList.add("slide-left");
+    splashText.classList.remove("hidden");
+    splashText.classList.add("show");
+    setTimeout(() => {
+      splash.classList.add("hide");
+      setTimeout(() => {
+        splash.remove();
+      }, 400);
+    }, 500);
+  }
+}, 2500);
+
 // ===== FERMETURE DES MODALES AU CLIC SUR LE FOND =====
 window.addEventListener("click", (e) => {
   if (e.target === loginModal) {
     loginModal.classList.add("hidden");
   }
 });
+
+// Récupération des éléments
+const inscriptionActions = document.getElementById("inscription-actions");
+const clearFormBtn = document.getElementById("clear-form-btn");
+const downloadFormBtn = document.getElementById("download-form-btn");
+
+function enterInscriptionPage() {
+  window.scrollTo(0, 0);
+  hubSection.classList.add("hidden");
+  orientiugSection.classList.add("hidden");
+  inscriptionSection.classList.remove("hidden");
+  headerIcon.className = "fas fa-pen-alt";
+  headerTitle.textContent = "Fiche d'inscription";
+  backButton.classList.remove("hidden");
+  document.body.classList.remove("chat-active");
+  hubActions.classList.add("hidden");
+  chatActions.classList.add("hidden");
+  inscriptionActions.classList.remove("hidden"); // Afficher les boutons inscription
+  // Mettre à jour la date dans le pied de page
+  const dateSpan = document.getElementById("current-date");
+  if (dateSpan) {
+    dateSpan.textContent = new Date().toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+}
+
+function exitInscriptionPage() {
+  inscriptionSection.classList.add("hidden");
+  hubSection.classList.remove("hidden");
+  headerIcon.className = "fas fa-cubes";
+  headerTitle.textContent = "Hub IUG";
+  backButton.classList.add("hidden");
+  hubActions.classList.remove("hidden");
+  chatActions.classList.add("hidden");
+  inscriptionActions.classList.add("hidden"); // Cacher les boutons inscription
+  const form = document.getElementById("inscription-form");
+  if (form) form.reset();
+  const feedback = document.getElementById("inscription-feedback");
+  if (feedback) feedback.textContent = "";
+}
+
+// Gestion des boutons inscription
+if (clearFormBtn) {
+  clearFormBtn.addEventListener("click", () => {
+    const form = document.getElementById("inscription-form");
+    if (form) form.reset();
+    showToast("Tous les champs ont été vidés.");
+  });
+}
+
+if (downloadFormBtn) {
+  downloadFormBtn.addEventListener("click", async () => {
+    // 1. Récupérer tous les champs obligatoires (ceux avec l'attribut required)
+    const requiredFields = document.querySelectorAll(
+      "#inscription-form input[required], #inscription-form select[required]"
+    );
+    let missingFields = [];
+
+    // Vérifier chaque champ obligatoire
+    requiredFields.forEach((field) => {
+      const value = field.value.trim();
+      if (value === "") {
+        // Récupérer le label associé (le texte du label précédent)
+        const label = field.closest(".form-group")?.querySelector("label");
+        const fieldName = label
+          ? label.innerText.replace("*", "").trim()
+          : "champ";
+        missingFields.push(fieldName);
+      }
+    });
+
+    // 2. Si des champs manquent, afficher un toast et arrêter
+    if (missingFields.length > 0) {
+      const missingList = missingFields.join(", ");
+      showToast(`Veuillez remplir les champs obligatoires`);
+      return;
+    }
+
+    // 3. Récupérer le nom de famille pour le nom du fichier
+    let nom = "";
+    const nomInput = document.querySelector(
+      "#inscription-form input[placeholder='Nom de famille']"
+    );
+    if (nomInput && nomInput.value.trim()) {
+      nom = nomInput.value.trim().replace(/\s+/g, "_");
+    } else {
+      nom = "candidat";
+    }
+
+    // 4. Générer le PDF
+    const element = document.getElementById("inscription-section");
+    if (!element) {
+      showToast("Erreur : formulaire introuvable.");
+      return;
+    }
+
+    const opt = {
+      margin: [0.5, 0.5, 0.5, 0.5],
+      filename: `${nom}_fiche_inscription.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, letterRendering: true, useCORS: false },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    };
+
+    try {
+      showToast("Génération du PDF en cours...");
+      await html2pdf().set(opt).from(element).save();
+      showToast("PDF généré avec succès !");
+    } catch (err) {
+      console.error(err);
+      showToast("Erreur lors de la génération du PDF.");
+    }
+  });
+}
+
+// ===== GESTION DE LA PAGE INSCRIPTION =====
+let previousChatState = null; // store whether we were in presentation or chat
+
+function enterInscriptionPage() {
+  window.scrollTo(0, 0);
+
+  // Save current chat state (we assume we are coming from chat)
+  previousChatState = {
+    presentationVisible: !presentationDiv.classList.contains("hidden"),
+    chatVisible: !chatFullscreen.classList.contains("hidden")
+  };
+
+  hubSection.classList.add("hidden");
+  orientiugSection.classList.add("hidden");
+  inscriptionSection.classList.remove("hidden");
+  headerIcon.className = "fas fa-pen-alt";
+  headerTitle.textContent = "Fiche d'inscription";
+  backButton.classList.remove("hidden");
+  document.body.classList.remove("chat-active");
+  hubActions.classList.add("hidden");
+  chatActions.classList.add("hidden");
+  inscriptionActions.classList.remove("hidden");
+
+  // Mettre à jour la date dans le pied de page
+  const dateSpan = document.getElementById("current-date");
+  if (dateSpan) {
+    dateSpan.textContent = new Date().toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+}
+
+function exitInscriptionPage() {
+  inscriptionSection.classList.add("hidden");
+
+  // Restore previous chat state
+  if (previousChatState) {
+    // Show the orientiug section
+    orientiugSection.classList.remove("hidden");
+    // Restore visibility of presentation or chat
+    if (previousChatState.presentationVisible) {
+      presentationDiv.classList.remove("hidden");
+      chatFullscreen.classList.add("hidden");
+    } else if (previousChatState.chatVisible) {
+      presentationDiv.classList.add("hidden");
+      chatFullscreen.classList.remove("hidden");
+      document.body.classList.add("chat-active");
+    }
+    // Ensure hubar is set correctly
+    headerIcon.className = "fas fa-compass";
+    headerTitle.textContent = "OrientIUG";
+    backButton.classList.remove("hidden");
+    hubActions.classList.add("hidden");
+    chatActions.classList.remove("hidden");
+  } else {
+    // Fallback to hub
+    hubSection.classList.remove("hidden");
+    headerIcon.className = "fas fa-cubes";
+    headerTitle.textContent = "Hub IUG";
+    backButton.classList.add("hidden");
+    hubActions.classList.remove("hidden");
+    chatActions.classList.add("hidden");
+  }
+
+  // Do NOT reset the form (keep filled data)
+  // But we might want to reset the feedback message
+  const feedback = document.getElementById("inscription-feedback");
+  if (feedback) feedback.textContent = "";
+
+  // Hide inscription actions
+  inscriptionActions.classList.add("hidden");
+}
+
+// Update the back button handler
+function handleBackButton() {
+  if (!inscriptionSection.classList.contains("hidden")) {
+    exitInscriptionPage();
+  } else if (!chatFullscreen.classList.contains("hidden")) {
+    returnToHub();
+  } else if (!presentationDiv.classList.contains("hidden")) {
+    returnToHub();
+  } else if (!orientiugSection.classList.contains("hidden")) {
+    returnToHub();
+  } else {
+    returnToHub();
+  }
+}
+backButton.removeEventListener("click", handleBackButton);
+backButton.addEventListener("click", handleBackButton);
+
+// PDF download with forced light mode
+if (downloadFormBtn) {
+  downloadFormBtn.addEventListener("click", async () => {
+    // Validate required fields
+    const requiredFields = document.querySelectorAll(
+      "#inscription-form input[required], #inscription-form select[required]"
+    );
+    let missingFields = [];
+    requiredFields.forEach((field) => {
+      const value = field.value.trim();
+      if (value === "") {
+        const label = field.closest(".form-group")?.querySelector("label");
+        const fieldName = label
+          ? label.innerText.replace("*", "").trim()
+          : "champ";
+        missingFields.push(fieldName);
+      }
+    });
+
+    if (missingFields.length > 0) {
+      const missingList = missingFields.join(", ");
+      showToast(`Veuillez remplir les champs obligatoires : ${missingList}`);
+      return;
+    }
+
+    // Get name for filename
+    let nom = "";
+    const nomInput = document.querySelector(
+      "#inscription-form input[placeholder='Nom de famille']"
+    );
+    if (nomInput && nomInput.value.trim()) {
+      nom = nomInput.value.trim().replace(/\s+/g, "_");
+    } else {
+      nom = "candidat";
+    }
+
+    // Clone the inscription section for PDF to avoid altering visible page
+    const originalElement = document.getElementById("inscription-section");
+    if (!originalElement) {
+      showToast("Erreur : formulaire introuvable.");
+      return;
+    }
+    const clone = originalElement.cloneNode(true);
+    // Ensure the clone has the correct styles and dimensions
+    clone.style.position = "absolute";
+    clone.style.top = "-9999px";
+    clone.style.left = "-9999px";
+    // Add light mode class to force light appearance
+    clone.querySelector(".inscription-paper").classList.add("pdf-light-mode");
+    document.body.appendChild(clone);
+
+    const opt = {
+      margin: [0.5, 0.5, 0.5, 0.5],
+      filename: `${nom}_fiche_inscription.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, letterRendering: true, useCORS: false },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    };
+
+    try {
+      showToast("Génération du PDF en cours...");
+      await html2pdf().set(opt).from(clone).save();
+      showToast("PDF généré avec succès !");
+    } catch (err) {
+      console.error(err);
+      showToast("Erreur lors de la génération du PDF.");
+    } finally {
+      // Remove clone
+      document.body.removeChild(clone);
+    }
+  });
+}
+
+function getBotResponse(userMessage) {
+  const msg = userMessage.toLowerCase().trim();
+
+  // Salutations
+  if (msg.match(/^(bonjour|salut|coucou|hello|hey|yo)/i)) {
+    return "Bonjour ! Je suis OrientIUG, votre assistant d'orientation. Je peux vous aider à découvrir les filières de l'IUG, les débouchés, et même vous guider pour votre inscription. Que souhaitez‑vous savoir ?";
+  }
+
+  // Présentation de l'assistant
+  if (
+    msg.includes("qui es-tu") ||
+    msg.includes("qui êtes-vous") ||
+    msg.includes("c'est quoi orientiug")
+  ) {
+    return "Je suis OrientIUG, un assistant virtuel conçu pour vous accompagner dans votre choix d'orientation à l'Institut Universitaire du Golfe de Guinée. Je connais toutes les filières, les débouchés et les conditions d'admission. N'hésitez pas à me poser des questions !";
+  }
+
+  // Présentation de l'IUG
+  if (
+    msg.includes("présente iug") ||
+    msg.includes("qu'est-ce que l'iug") ||
+    msg.includes("c'est quoi l'iug") ||
+    msg.includes("parle moi de l'iug")
+  ) {
+    return "L'Institut Universitaire du Golfe de Guinée (IUG) est un établissement d'enseignement supérieur réputé. Il propose trois grandes filières :\n• ESG – Gestion et commerce\n• ISTA – Informatique et technologies\n• ISA – Agronomie et environnement\nNos formations sont conçues pour répondre aux besoins du marché et former des professionnels compétents.";
+  }
+
+  // Demande d'inscription
+  if (
+    msg.includes("inscription") ||
+    msg.includes("s'inscrire") ||
+    msg.includes("comment s'inscrire") ||
+    msg.includes("fiche d'inscription")
+  ) {
+    return "Pour vous inscrire, vous devez remplir notre fiche d'inscription en ligne. Vous y trouverez tous les champs nécessaires (identité, coordonnées, parcours souhaité). <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>Cliquez ici pour accéder à la fiche d'inscription</a>. Une fois remplie, vous pourrez la télécharger en PDF.";
+  }
+
+  // Remerciement – on propose le lien
+  if (
+    msg.includes("merci") ||
+    msg.includes("c'est tout") ||
+    msg.includes("super")
+  ) {
+    return "Avec plaisir ! Si vous souhaitez rejoindre l'IUG, n'hésitez pas à remplir notre fiche d'inscription : <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>cliquez ici</a>. Bonne continuation !";
+  }
+
+  // Questions sur les filières (déjà existantes)
+  if (msg.includes("esg") || msg.includes("débouchés")) {
+    return "La filière ESG prépare aux métiers de la gestion, du commerce et du management. Les débouchés incluent responsable RH, chargé de marketing, ou encore contrôleur de gestion.";
+  } else if (msg.includes("ista") || msg.includes("informatique")) {
+    return "ISTA forme aux métiers de l'informatique et du numérique. Vous pouvez devenir développeur, administrateur réseau, ou data analyst.";
+  } else if (msg.includes("isa") || msg.includes("agronomie")) {
+    return "ISA est spécialisé dans les sciences agronomiques et l'environnement. Les diplômés travaillent dans l'agroalimentaire, la gestion des ressources naturelles, ou la recherche.";
+  } else if (msg.includes("admission") || msg.includes("condition")) {
+    return "Les conditions d'admission varient selon les filières. En général, il faut un baccalauréat (séries selon la filière) et passer une étude de dossier. Consultez le site de l'IUG pour plus de détails.";
+  } else if (
+    msg.includes("contact") ||
+    msg.includes("téléphone") ||
+    msg.includes("email")
+  ) {
+    return "Vous pouvez contacter l'IUG par téléphone au +237 6XX XX XX XX ou par email à contact@univ-iug.com. Pour toute question administrative, le secrétariat est ouvert du lundi au vendredi.";
+  } else {
+    return "Je n'ai pas encore appris à répondre à cette question. Pouvez-vous reformuler ou me poser une question sur les filières (ESG, ISTA, ISA), les débouchés, les conditions d'admission ou l'inscription ?";
+  }
+}
