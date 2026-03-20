@@ -101,6 +101,177 @@ body.dark-theme::before {
   z-index: 2;
 }
 
+/* ===== SPLASH SCREEN (cubes formant l'icône) ===== */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-gradient-start);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+  overflow: hidden;
+}
+.splash-screen.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.cube-group {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+  will-change: transform;
+}
+.cube-group.slide-left {
+  transform: translateX(-120px);
+}
+
+.cube {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(145deg, #3a7ca5, #2c5a7a);
+  border-radius: 18px;
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transition: background 0.2s;
+}
+body.dark-theme .cube {
+  background: linear-gradient(145deg, #2c5a7a, #1e3a4a);
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.5);
+}
+
+.cube-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+.cube-bottom-right {
+  bottom: 0;
+  right: 0;
+}
+.cube-top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cube-bottom-left {
+  transform: translateX(-300px);
+  animation: slideInLeft 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+.cube-bottom-right {
+  transform: translateX(300px);
+  animation: slideInRight 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+.cube-top {
+  transform: translateY(-300px) translateX(-50%);
+  animation: slideInTop 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+
+@keyframes slideInLeft {
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slideInRight {
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slideInTop {
+  to {
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+@keyframes squash {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.cube-group.assembled .cube {
+  animation: squash 0.2s ease-out;
+}
+
+.splash-text {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e2b3a, #2c5a7a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-left: 1rem;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.splash-text.show {
+  opacity: 1;
+  transform: scale(1);
+}
+body.dark-theme .splash-text {
+  background: linear-gradient(135deg, #ecf0f1, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .cube-group {
+    width: 100px;
+    height: 100px;
+  }
+  .cube {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+  }
+  .splash-text {
+    font-size: 2rem;
+  }
+  .cube-group.slide-left {
+    transform: translateX(-100px);
+  }
+}
+@media (max-width: 480px) {
+  .cube-group {
+    width: 80px;
+    height: 80px;
+  }
+  .cube {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+  }
+  .splash-text {
+    font-size: 1.5rem;
+  }
+  .cube-group.slide-left {
+    transform: translateX(-70px);
+  }
+}
+
 /* ===== BANDE FLOUTÉE DE 10px ===== */
 .blur-top-gap {
   position: fixed;
@@ -1715,4 +1886,239 @@ body.chat-active .help-float {
   .projects-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* ===== PAGE INSCRIPTION ===== */
+.inscription-section {
+  margin-top: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+.inscription-content {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 40px;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 30px 50px -20px var(--shadow-color);
+}
+.inscription-content h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+#inscription-form input,
+#inscription-form select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+#inscription-form button {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  border-radius: 30px;
+  background: #3a7ca5;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+#inscription-form button[type="button"] {
+  background: transparent;
+  border: 1px solid #3a7ca5;
+  color: var(--text-primary);
+}
+#inscription-feedback {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .inscription-content {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+}
+
+.inscription-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ===== FICHE D'INSCRIPTION (A4) ===== */
+.inscription-section {
+  margin: 1rem auto;
+  max-width: 1000px;
+  animation: fadeIn 0.3s ease;
+}
+.inscription-paper {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 1.8rem 1.8rem 1.2rem;
+  transition: background 0.3s;
+}
+body.dark-theme .inscription-paper {
+  background: #1e2a3a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* En-tête */
+.inscription-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #3a7ca5;
+}
+.inscription-logo i {
+  font-size: 2.5rem;
+  color: #3a7ca5;
+}
+.inscription-logo h2 {
+  font-size: 1.2rem;
+  margin-top: 0.3rem;
+  color: var(--text-primary);
+}
+.inscription-title h1 {
+  font-size: 1.5rem;
+  color: #2c5a7a;
+  margin-top: 0.5rem;
+  letter-spacing: 1px;
+}
+.inscription-title p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Sections du formulaire */
+.form-section {
+  margin-bottom: 1rem;
+}
+.form-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3a7ca5;
+  margin-bottom: 0.6rem;
+  border-left: 4px solid #3a7ca5;
+  padding-left: 0.5rem;
+}
+body.dark-theme .form-section h3 {
+  color: #5a9bc0;
+}
+
+.inscription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.form-group {
+  flex: 1;
+  min-width: 180px;
+}
+.form-group.full-width {
+  width: 100%;
+}
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+.required {
+  color: #e74c3c;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fefefe;
+  font-size: 0.85rem;
+  transition: border-color 0.2s;
+}
+body.dark-theme .form-group input,
+body.dark-theme .form-group select,
+body.dark-theme .form-group textarea {
+  background: #2d3748;
+  border-color: #4a5568;
+  color: #edf2f7;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3a7ca5;
+  box-shadow: 0 0 0 2px rgba(58, 124, 165, 0.2);
+}
+
+/* Pied de page */
+.inscription-footer {
+  margin-top: 1rem;
+  padding-top: 0.6rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.signature {
+  margin-top: 0.3rem;
+}
+
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .inscription-section {
+    margin: 1rem;
+  }
+  .inscription-paper {
+    padding: 1rem;
+  }
+  .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .inscription-title h1 {
+    font-size: 1.2rem;
+  }
+  .inscription-logo h2 {
+    font-size: 1rem;
+  }
+  .form-section h3 {
+    font-size: 0.9rem;
+  }
+}
+
+/* Force light mode for PDF generation */
+.inscription-paper.pdf-light-mode {
+  background: white;
+  color: #1e2b3a;
+}
+.inscription-paper.pdf-light-mode .form-group input,
+.inscription-paper.pdf-light-mode .form-group select,
+.inscription-paper.pdf-light-mode .form-group textarea {
+  background: #fefefe;
+  border-color: #ccc;
+  color: #1e2b3a;
+}
+.inscription-paper.pdf-light-mode .form-section h3 {
+  color: #3a7ca5;
+}
+.inscription-paper.pdf-light-mode .inscription-title h1 {
+  color: #2c5a7a;
+}
+.inscription-paper.pdf-light-mode .required {
+  color: #e74c3c;
 }
