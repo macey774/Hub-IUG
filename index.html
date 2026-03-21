@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr">
 
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
-
 <body>
   <!-- SPLASH SCREEN : cubes formant l'icône -->
   <div id="splash-screen" class="splash-screen">
@@ -70,7 +69,6 @@
           <i class="fas fa-bars"></i>
         </button>
       </div>
-
       <!-- Actions de la page inscription (cachées par défaut) -->
       <div id="inscription-actions" class="inscription-actions hidden">
         <button id="clear-form-btn" class="icon-btn" aria-label="Vider les champs">
@@ -354,27 +352,6 @@
           </ul>
         </div>
 
-        <!-- Modale d'inscription -->
-        <div id="register-modal" class="modal hidden">
-          <div class="modal-content">
-            <h2>Inscription à l'IUG</h2>
-            <form id="register-form">
-              <input type="text" placeholder="Nom complet" required>
-              <input type="email" placeholder="Email" required>
-              <input type="tel" placeholder="Téléphone">
-              <select required>
-                <option value="">Choisissez votre filière</option>
-                <option>ESG (Gestion)</option>
-                <option>ISTA (Informatique)</option>
-                <option>ISA (Agronomie)</option>
-              </select>
-              <button type="submit">Envoyer la demande</button>
-              <button type="button" id="close-register">Fermer</button>
-            </form>
-            <p id="register-feedback" class="feedback"></p>
-          </div>
-        </div>
-
         <!-- Panneau de recherche flottant -->
         <div id="search-panel" class="search-panel hidden">
           <input type="text" id="search-input" placeholder="Rechercher un message...">
@@ -402,167 +379,214 @@
       <div class="inscription-paper">
         <div class="inscription-header">
           <div class="inscription-logo">
-            <i class="fas fa-cubes"></i>
+            <div class="inscription-logo-icon">
+              <i class="fas fa-university"></i>
+            </div>
             <h2>Institut Universitaire du Golfe de Guinée</h2>
           </div>
           <div class="inscription-title">
             <h1>FICHE D'INSCRIPTION</h1>
-            <p>Année académique 2025-2026</p>
+            <h2>Admission Form <span id="academic-year"></span></h2>
           </div>
         </div>
 
         <form id="inscription-form" class="inscription-form">
-          <!-- ===== IDENTITÉ ===== -->
-          <div class="form-section">
-            <h3>Identité du candidat</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nom <span class="required">*</span></label>
-                <input type="text" placeholder="Nom de famille" required>
-              </div>
-              <div class="form-group">
-                <label>Prénom(s) <span class="required">*</span></label>
-                <input type="text" placeholder="Prénom(s)" required>
-              </div>
+          <!-- IDENTITÉ -->
+          <div class="form-row three-cols">
+            <div class="field-group">
+              <label>Nom du candidat <span class="required">*</span><br><small>Candidature's name</small></label>
+              <input type="text" placeholder="......" required>
             </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>Date de naissance <span class="required">*</span></label>
-                <input type="date" required>
-              </div>
-              <div class="form-group">
-                <label>Lieu de naissance</label>
-                <input type="text" placeholder="Ville, pays">
-              </div>
+            <div class="field-group">
+              <label>Prénom <span class="required">*</span><br><small>Surname</small></label>
+              <input type="text" placeholder="......" required>
             </div>
+            <div class="field-group">
+              <label>Sexe <span class="required">*</span></label>
+              <select required>
+                <option value="">......</option>
+                <option>M</option>
+                <option>F</option>
+              </select>
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nationalité</label>
-                <input type="text" placeholder="Nationalité">
-              </div>
-              <div class="form-group">
-                <label>Numéro d'identité (CNI / Passeport)</label>
-                <input type="text" placeholder="N° CNI ou passeport">
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Date de naissance <span class="required">*</span><br><small>Date of birth</small></label>
+              <input type="date" required>
+            </div>
+            <div class="field-group">
+              <label>Lieu de naissance <br><small>Place of birth</small></label>
+              <input type="text" placeholder="......">
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Nationalité <br><small>Nationality</small></label>
+              <input type="text" placeholder="......">
+            </div>
+            <div class="field-group">
+              <label>Région d'origine <br><small>Region</small></label>
+              <input type="text" placeholder="......">
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Téléphone étudiant <span class="required">*</span><br><small>Student's phone</small></label>
+              <input type="tel" id="student-phone" placeholder="......" required pattern="\d{9}" inputmode="numeric" title="9 chiffres">
+            </div>
+            <div class="field-group">
+              <label>E-mail <span class="required">*</span></label>
+              <input type="email" placeholder="......" required>
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Nature du baccalauréat <br><small>Certificate Obtained</small></label>
+              <input type="text" placeholder="......">
+            </div>
+            <div class="field-group">
+              <label>Année d'obtention <br><small>Year of obtention</small></label>
+              <input type="text" id="graduation-year" placeholder="......" pattern="\d{4}" inputmode="numeric" title="4 chiffres">
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Dernier établissement fréquenté <br><small>The last school attended</small></label>
+              <input type="text" placeholder="......">
+            </div>
+            <div class="field-group">
+              <label>Classe <br><small>The last class attended</small></label>
+              <input type="text" placeholder="......">
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Spécialité choisie <span class="required">*</span><br><small>Specialty</small></label>
+              <select required>
+                <option value="">......</option>
+                <option>ESG (Gestion)</option>
+                <option>ISTA (Informatique)</option>
+                <option>ISA (Agronomie)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Jour ☐  Soir ☐ <br><small>Day class &nbsp;&nbsp; Evening class</small></label>
+              <div class="radio-group">
+                <label><input type="radio" name="schedule" value="jour" required> Jour</label>
+                <label><input type="radio" name="schedule" value="soir"> Soir</label>
               </div>
             </div>
           </div>
 
-          <!-- ===== COORDONNÉES ===== -->
-          <div class="form-section">
-            <h3>Coordonnées</h3>
-            <div class="form-group full-width">
-              <label>Adresse complète</label>
-              <textarea rows="2" placeholder="Rue, quartier, ville, code postal..."></textarea>
+          <!-- PARENTS / TUTEURS -->
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Nom du père ou tuteur <span class="required">*</span><br><small>Father's names</small></label>
+              <input type="text" placeholder="......" required>
             </div>
+            <div class="field-group">
+              <label>Tél. <span class="required">*</span></label>
+              <input type="tel" id="parent-phone" placeholder="......" required pattern="\d{9}" inputmode="numeric" title="9 chiffres">
+            </div>
+          </div>
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Nom de la mère <br><small>Mother's names</small></label>
+              <input type="text" placeholder="......">
+            </div>
+            <div class="field-group">
+              <label>Tél.</label>
+              <input type="tel" id="mother-phone" placeholder="......" pattern="\d{9}" inputmode="numeric" title="9 chiffres">
+            </div>
+          </div>
+          <div class="form-row two-cols">
+            <div class="field-group">
+              <label>Profession du père</label>
+              <input type="text" placeholder="......">
+            </div>
+            <div class="field-group">
+              <label>Profession de la mère</label>
+              <input type="text" placeholder="......">
+            </div>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label>Email <span class="required">*</span></label>
-                <input type="email" placeholder="exemple@domaine.com" required>
+          <!-- PIÈCES FOURNIES -->
+          <div class="form-section">
+            <h3>Pièces fournies :<br><small>Admission procédures</small></h3>
+            <div class="checklist">
+              <div class="checklist-item">
+                <div class="checklist-fr">Demande d'inscription</div>
+                <div class="checklist-en">
+                  Hand written application
+                  <span class="checkbox-right">
+                    <input type="checkbox"> ☐
+                  </span>
+                </div>
               </div>
-              <div class="form-group">
-                <label>Téléphone <span class="required">*</span></label>
-                <input type="tel" placeholder="+237 XXXXXXXXX" required>
+              <div class="checklist-item">
+                <div class="checklist-fr">Photocopie certifiée du Diplôme</div>
+                <div class="checklist-en">
+                  Certified copy of GCE A/L or Bac
+                  <span class="checkbox-right">
+                    <input type="checkbox"> ☐
+                  </span>
+                </div>
+              </div>
+              <div class="checklist-item">
+                <div class="checklist-fr">Photocopie Certifiée de l'acte de naissance</div>
+                <div class="checklist-en">
+                  Certified copy of birth certificate
+                  <span class="checkbox-right">
+                    <input type="checkbox"> ☐
+                  </span>
+                </div>
+              </div>
+              <div class="checklist-item">
+                <div class="checklist-fr">Visite médicale exigée (5 000 F)</div>
+                <div class="checklist-en">
+                  Medical check-up (5 000 thousand F)
+                  <span class="checkbox-right">
+                    <input type="checkbox"> ☐
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- ===== PARENTS / TUTEURS ===== -->
+          <!-- ENGAGEMENT -->
           <div class="form-section">
-            <h3>Parents / Tuteurs</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nom du père</label>
-                <input type="text" placeholder="Nom et prénom">
-              </div>
-              <div class="form-group">
-                <label>Profession du père</label>
-                <input type="text" placeholder="Profession">
-              </div>
+            <p class="engagement">
+              Je m’engage à respecter scrupuleusement l’ordre et la discipline conformément aux dispositions du Règlement Intérieur de l’Institut Universitaire du Golfe de Guinée (IUG).<br>
+              <em>I’m engaged to respect scrupulously the order and discipline according to all the internal rules and regulation of University Institute of Guinea Gulf.</em>
+            </p>
+          </div>
+
+          <!-- SIGNATURE ET DATE -->
+          <div class="form-row signature-row">
+            <div class="field-group signature-date">
+              <label>Douala, le <input type="text" id="current-date-input" class="date-input" placeholder="...../...../20.."></label>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nom de la mère</label>
-                <input type="text" placeholder="Nom et prénom">
-              </div>
-              <div class="form-group">
-                <label>Profession de la mère</label>
-                <input type="text" placeholder="Profession">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Tuteur légal (si différent)</label>
-                <input type="text" placeholder="Nom, prénom, lien">
-              </div>
-              <div class="form-group">
-                <label>Téléphone du tuteur</label>
-                <input type="tel" placeholder="Numéro de téléphone">
-              </div>
+            <div class="field-group signature-area">
+              <label>Signature du candidat</label>
+              <div class="signature-place">_________________________</div>
             </div>
           </div>
 
-          <!-- ===== CONTACT D'URGENCE ===== -->
+          <!-- NOTE -->
           <div class="form-section">
-            <h3>Contact d'urgence</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Nom du contact</label>
-                <input type="text" placeholder="Nom complet">
-              </div>
-              <div class="form-group">
-                <label>Téléphone</label>
-                <input type="tel" placeholder="Numéro">
-              </div>
-            </div>
-            <div class="form-group full-width">
-              <label>Lien avec le candidat</label>
-              <input type="text" placeholder="Père, mère, oncle, etc.">
-            </div>
-          </div>
-
-          <!-- ===== SCOLARITÉ ===== -->
-          <div class="form-section">
-            <h3>Parcours souhaité</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Filière choisie <span class="required">*</span></label>
-                <select required>
-                  <option value="">Sélectionnez votre filière</option>
-                  <option>ESG (Gestion)</option>
-                  <option>ISTA (Informatique)</option>
-                  <option>ISA (Agronomie)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Année d'étude visée</label>
-                <select>
-                  <option>L1</option>
-                  <option>L2</option>
-                  <option>L3</option>
-                  <option>M1</option>
-                  <option>M2</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- ===== INFORMATIONS COMPLÉMENTAIRES ===== -->
-          <div class="form-section">
-            <h3>Informations complémentaires</h3>
-            <div class="form-group full-width">
-              <label>Autres informations (facultatif)</label>
-              <textarea rows="2" placeholder="Expériences, motivations, etc."></textarea>
-            </div>
+            <p class="note">
+              NB: Les noms et prénoms doivent être ceux figurant sur la carte d’identité nationale et le changement de spécialité au cours de l’année doit porter la mention de l’administration.<br>
+              <em>Your name and surname should appear the same as in your National Identity Card and any change of department (specialty) you have to inform the school authority</em>
+            </p>
           </div>
         </form>
-
-        <div class="inscription-footer">
-          <p>Date de la demande : <span id="current-date"></span></p>
-          <p class="signature">Signature du candidat : _________________________</p>
-        </div>
       </div>
     </div>
 
@@ -641,5 +665,4 @@
 
   <script src="script.js"></script>
 </body>
-
 </html>
