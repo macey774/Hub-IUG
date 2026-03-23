@@ -67,7 +67,9 @@ langToggles.forEach((toggle) => {
 });
 
 // ===== GESTION DE LA CONNEXION =====
-const loginBtns = document.querySelectorAll("#loginBtn, #loginBtnChat, #mobileLogin");
+const loginBtns = document.querySelectorAll(
+  "#loginBtn, #loginBtnChat, #mobileLogin"
+);
 const loginModal = document.getElementById("loginModal");
 const loginClose = document.getElementById("loginClose");
 const loginSubmit = document.getElementById("loginSubmit");
@@ -145,9 +147,9 @@ fontSizeSelect.addEventListener("change", (e) => {
 const contrastSelect = document.getElementById("contrast");
 contrastSelect.addEventListener("change", (e) => {
   if (e.target.value === "high") {
-    document.body.style.filter = "contrast(1.5)";
+    document.body.classList.add("contrast-high");
   } else {
-    document.body.style.filter = "none";
+    document.body.classList.remove("contrast-high");
   }
 });
 
@@ -256,6 +258,8 @@ function showChatFullscreen() {
   document.body.classList.add("chat-active");
   loadChatMessages();
   loadChatTheme();
+  // Précharger le modèle intelligent
+  loadModel();
 }
 
 // Variables pour la page d'inscription
@@ -269,8 +273,8 @@ function setCurrentDate() {
   const dateInput = document.getElementById("current-date-input");
   if (dateInput) {
     const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
     const year = today.getFullYear();
     dateInput.value = `${day}/${month}/${year}`;
   }
@@ -294,7 +298,7 @@ function setAcademicYear() {
 
 function enterInscriptionPage() {
   window.scrollTo(0, 0);
-  
+
   // Save current chat state (if we are in orientiug section)
   if (!orientiugSection.classList.contains("hidden")) {
     previousChatState = {
@@ -304,7 +308,7 @@ function enterInscriptionPage() {
   } else {
     previousChatState = null;
   }
-  
+
   hubSection.classList.add("hidden");
   orientiugSection.classList.add("hidden");
   inscriptionSection.classList.remove("hidden");
@@ -315,7 +319,7 @@ function enterInscriptionPage() {
   hubActions.classList.add("hidden");
   chatActions.classList.add("hidden");
   inscriptionActions.classList.remove("hidden");
-  
+
   // Remplir la date automatiquement
   setCurrentDate();
   setAcademicYear();
@@ -324,7 +328,7 @@ function enterInscriptionPage() {
 function exitInscriptionPage() {
   inscriptionSection.classList.add("hidden");
   inscriptionActions.classList.add("hidden");
-  
+
   if (previousChatState) {
     // Restore previous chat state
     orientiugSection.classList.remove("hidden");
@@ -350,7 +354,7 @@ function exitInscriptionPage() {
     hubActions.classList.remove("hidden");
     chatActions.classList.add("hidden");
   }
-  
+
   // Do NOT reset the form (keep filled data)
   const feedback = document.getElementById("inscription-feedback");
   if (feedback) feedback.textContent = "";
@@ -449,6 +453,122 @@ function addDateSeparator(date) {
   }
 }
 
+// ===== INDICATEUR DE FRAPPE =====
+const typingIndicator = document.createElement("div");
+typingIndicator.className = "typing-indicator hidden";
+typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+chatMessages.parentNode.insertBefore(typingIndicator, chatMessages.nextSibling);
+
+function showTypingIndicator() {
+  typingIndicator.classList.remove("hidden");
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+  typingIndicator.classList.add("hidden");
+}
+
+// ===== MODÈLE INTELLIGENT (Transformers.js) =====
+let model = null;
+let modelLoading = false;
+
+async function loadModel() {
+  if (model) return model;
+  if (modelLoading) return;
+
+  modelLoading = true;
+  showToast("Chargement du modèle d'IA... (premier lancement un peu long)");
+
+  try {
+    // Vérifier que transformers est disponible
+    if (typeof transformers === 'undefined') {
+      throw new Error("Bibliothèque transformers.js non chargée");
+    }
+    const { pipeline } = transformers;
+    model = await pipeline('text-generation', 'Xenova/distilgpt2');
+    showToast("Modèle prêt ! Vous pouvez discuter.");
+    return model;
+  } catch (error) {
+    console.error("Erreur chargement modèle", error);
+    showToast("Impossible de charger le modèle. Utilisation du mode secours.");
+    model = null;
+  } finally {
+    modelLoading = false;
+  }
+  return null;
+}
+
+async function getBotResponseFromModel(userMessage, history) {
+  const m = await loadModel();
+  if (!m) return fallbackResponse(userMessage);
+
+  // Construire le prompt avec le contexte
+  let prompt = `Contexte : Vous êtes OrientIUG, un assistant d'orientation de l'Institut Universitaire du Golfe de Guinée (IUG).\n`;
+  prompt += `Vous connaissez les filières ESG (Gestion), ISTA (Informatique) et ISA (Agronomie), ainsi que les conditions d'admission, les pièces à fournir et la procédure d'inscription.\n`;
+  prompt += `Répondez de manière concise et utile en français.\n\n`;
+
+  // Ajouter l'historique des 6 derniers messages
+  const recentHistory = history.slice(-6);
+  for (let msg of recentHistory) {
+    prompt += `${msg.isUser ? "Étudiant" : "Assistant"} : ${msg.text}\n`;
+  }
+  prompt += `Étudiant : ${userMessage}\nAssistant :`;
+
+  try {
+    const output = await m(prompt, {
+      max_new_tokens: 100,
+      temperature: 0.7,
+      do_sample: true,
+      pad_token_id: 50256
+    });
+    let reply = output[0].generated_text;
+    // Extraire la partie après "Assistant :"
+    const parts = reply.split("Assistant :");
+    reply = parts[parts.length - 1].trim();
+    if (!reply) return fallbackResponse(userMessage);
+    return reply;
+  } catch (error) {
+    console.error("Erreur génération", error);
+    return fallbackResponse(userMessage);
+  }
+}
+
+function fallbackResponse(userMessage) {
+  const msg = userMessage.toLowerCase().trim();
+
+  if (msg.match(/^(bonjour|salut|coucou|hello|hey|yo)/i)) {
+    return "Bonjour ! Je suis OrientIUG, votre assistant d'orientation. Je peux vous aider à découvrir les filières de l'IUG, les débouchés, et même vous guider pour votre inscription. Que souhaitez‑vous savoir ?";
+  }
+  if (msg.includes("qui es-tu") || msg.includes("qui êtes-vous") || msg.includes("c'est quoi orientiug")) {
+    return "Je suis OrientIUG, un assistant virtuel conçu pour vous accompagner dans votre choix d'orientation à l'Institut Universitaire du Golfe de Guinée. Je connais toutes les filières, les débouchés et les conditions d'admission. N'hésitez pas à me poser des questions !";
+  }
+  if (msg.includes("présente iug") || msg.includes("qu'est-ce que l'iug") || msg.includes("c'est quoi l'iug") || msg.includes("parle moi de l'iug")) {
+    return "L'Institut Universitaire du Golfe de Guinée (IUG) est un établissement d'enseignement supérieur réputé. Il propose trois grandes filières :\n• ESG – Gestion et commerce\n• ISTA – Informatique et technologies\n• ISA – Agronomie et environnement\nNos formations sont conçues pour répondre aux besoins du marché et former des professionnels compétents.";
+  }
+  if (msg.includes("inscription") || msg.includes("s'inscrire") || msg.includes("comment s'inscrire") || msg.includes("fiche d'inscription")) {
+    return "Pour vous inscrire, vous devez remplir notre fiche d'inscription en ligne. Vous y trouverez tous les champs nécessaires (identité, coordonnées, parcours souhaité). <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>Cliquez ici pour accéder à la fiche d'inscription</a>. Une fois remplie, vous pourrez la télécharger en PDF.";
+  }
+  if (msg.includes("merci") || msg.includes("c'est tout") || msg.includes("super")) {
+    return "Avec plaisir ! Si vous souhaitez rejoindre l'IUG, n'hésitez pas à remplir notre fiche d'inscription : <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>cliquez ici</a>. Bonne continuation !";
+  }
+  if (msg.includes("esg") || msg.includes("débouchés")) {
+    return "La filière ESG prépare aux métiers de la gestion, du commerce et du management. Les débouchés incluent responsable RH, chargé de marketing, ou encore contrôleur de gestion.";
+  }
+  if (msg.includes("ista") || msg.includes("informatique")) {
+    return "ISTA forme aux métiers de l'informatique et du numérique. Vous pouvez devenir développeur, administrateur réseau, ou data analyst.";
+  }
+  if (msg.includes("isa") || msg.includes("agronomie")) {
+    return "ISA est spécialisé dans les sciences agronomiques et l'environnement. Les diplômés travaillent dans l'agroalimentaire, la gestion des ressources naturelles, ou la recherche.";
+  }
+  if (msg.includes("admission") || msg.includes("condition")) {
+    return "Les conditions d'admission varient selon les filières. En général, il faut un baccalauréat (séries selon la filière) et passer une étude de dossier. Consultez le site de l'IUG pour plus de détails.";
+  }
+  if (msg.includes("contact") || msg.includes("téléphone") || msg.includes("email")) {
+    return "Vous pouvez contacter l'IUG par téléphone au +237 6XX XX XX XX ou par email à contact@univ-iug.com. Pour toute question administrative, le secrétariat est ouvert du lundi au vendredi.";
+  }
+  return "Je n'ai pas encore appris à répondre à cette question. Pouvez-vous reformuler ou me poser une question sur les filières (ESG, ISTA, ISA), les débouchés, les conditions d'admission ou l'inscription ?";
+}
+
 function addMessage(text, isUser = false, timestamp = null) {
   const messageDate = timestamp ? new Date(timestamp) : new Date();
   addDateSeparator(messageDate);
@@ -480,54 +600,22 @@ function addMessage(text, isUser = false, timestamp = null) {
   if (isUser) {
     messageCount++;
     localStorage.setItem("messageCount", messageCount);
-    setTimeout(() => {
-      const botResponse = getBotResponse(text);
-      addMessage(botResponse, false);
-    }, 1000);
-  }
-}
 
-function getBotResponse(userMessage) {
-  const msg = userMessage.toLowerCase().trim();
+    // Afficher l'indicateur de frappe
+    showTypingIndicator();
 
-  // Salutations
-  if (msg.match(/^(bonjour|salut|coucou|hello|hey|yo)/i)) {
-    return "Bonjour ! Je suis OrientIUG, votre assistant d'orientation. Je peux vous aider à découvrir les filières de l'IUG, les débouchés, et même vous guider pour votre inscription. Que souhaitez‑vous savoir ?";
-  }
-
-  // Présentation de l'assistant
-  if (msg.includes("qui es-tu") || msg.includes("qui êtes-vous") || msg.includes("c'est quoi orientiug")) {
-    return "Je suis OrientIUG, un assistant virtuel conçu pour vous accompagner dans votre choix d'orientation à l'Institut Universitaire du Golfe de Guinée. Je connais toutes les filières, les débouchés et les conditions d'admission. N'hésitez pas à me poser des questions !";
-  }
-
-  // Présentation de l'IUG
-  if (msg.includes("présente iug") || msg.includes("qu'est-ce que l'iug") || msg.includes("c'est quoi l'iug") || msg.includes("parle moi de l'iug")) {
-    return "L'Institut Universitaire du Golfe de Guinée (IUG) est un établissement d'enseignement supérieur réputé. Il propose trois grandes filières :\n• ESG – Gestion et commerce\n• ISTA – Informatique et technologies\n• ISA – Agronomie et environnement\nNos formations sont conçues pour répondre aux besoins du marché et former des professionnels compétents.";
-  }
-
-  // Demande d'inscription
-  if (msg.includes("inscription") || msg.includes("s'inscrire") || msg.includes("comment s'inscrire") || msg.includes("fiche d'inscription")) {
-    return "Pour vous inscrire, vous devez remplir notre fiche d'inscription en ligne. Vous y trouverez tous les champs nécessaires (identité, coordonnées, parcours souhaité). <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>Cliquez ici pour accéder à la fiche d'inscription</a>. Une fois remplie, vous pourrez la télécharger en PDF.";
-  }
-
-  // Remerciement – on propose le lien
-  if (msg.includes("merci") || msg.includes("c'est tout") || msg.includes("super")) {
-    return "Avec plaisir ! Si vous souhaitez rejoindre l'IUG, n'hésitez pas à remplir notre fiche d'inscription : <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>cliquez ici</a>. Bonne continuation !";
-  }
-
-  // Questions sur les filières (déjà existantes)
-  if (msg.includes("esg") || msg.includes("débouchés")) {
-    return "La filière ESG prépare aux métiers de la gestion, du commerce et du management. Les débouchés incluent responsable RH, chargé de marketing, ou encore contrôleur de gestion.";
-  } else if (msg.includes("ista") || msg.includes("informatique")) {
-    return "ISTA forme aux métiers de l'informatique et du numérique. Vous pouvez devenir développeur, administrateur réseau, ou data analyst.";
-  } else if (msg.includes("isa") || msg.includes("agronomie")) {
-    return "ISA est spécialisé dans les sciences agronomiques et l'environnement. Les diplômés travaillent dans l'agroalimentaire, la gestion des ressources naturelles, ou la recherche.";
-  } else if (msg.includes("admission") || msg.includes("condition")) {
-    return "Les conditions d'admission varient selon les filières. En général, il faut un baccalauréat (séries selon la filière) et passer une étude de dossier. Consultez le site de l'IUG pour plus de détails.";
-  } else if (msg.includes("contact") || msg.includes("téléphone") || msg.includes("email")) {
-    return "Vous pouvez contacter l'IUG par téléphone au +237 6XX XX XX XX ou par email à contact@univ-iug.com. Pour toute question administrative, le secrétariat est ouvert du lundi au vendredi.";
-  } else {
-    return "Je n'ai pas encore appris à répondre à cette question. Pouvez-vous reformuler ou me poser une question sur les filières (ESG, ISTA, ISA), les débouchés, les conditions d'admission ou l'inscription ?";
+    // Appel au modèle intelligent
+    getBotResponseFromModel(text, messages)
+      .then(botResponse => {
+        hideTypingIndicator();
+        addMessage(botResponse, false);
+      })
+      .catch(error => {
+        console.error(error);
+        hideTypingIndicator();
+        const fallback = fallbackResponse(text);
+        addMessage(fallback, false);
+      });
   }
 }
 
@@ -754,7 +842,10 @@ function insertEmoji(emoji) {
   const newText = text.slice(0, cursorPos) + emoji + text.slice(cursorPos);
   chatInput.value = newText;
   chatInput.focus();
-  chatInput.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+  chatInput.setSelectionRange(
+    cursorPos + emoji.length,
+    cursorPos + emoji.length
+  );
   autoResizeTextarea();
   updateSendButton();
   addToRecent(emoji);
@@ -784,7 +875,11 @@ document.querySelectorAll(".emoji-option").forEach((emojiSpan) => {
 });
 
 document.addEventListener("click", (e) => {
-  if (emojiPickerVisible && !emojiStickerBtn.contains(e.target) && !emojiPicker.contains(e.target)) {
+  if (
+    emojiPickerVisible &&
+    !emojiStickerBtn.contains(e.target) &&
+    !emojiPicker.contains(e.target)
+  ) {
     closeEmojiPicker();
   }
 });
@@ -796,7 +891,11 @@ const threeDotsMenu = document.getElementById("three-dots-menu");
 let menuVisible = false;
 
 document.addEventListener("click", (e) => {
-  if (menuVisible && !threeDotsBtn.contains(e.target) && !threeDotsMenu.contains(e.target)) {
+  if (
+    menuVisible &&
+    !threeDotsBtn.contains(e.target) &&
+    !threeDotsMenu.contains(e.target)
+  ) {
     threeDotsMenu.classList.add("hidden");
     menuVisible = false;
   }
@@ -833,7 +932,7 @@ const searchResultsCount = document.getElementById("search-results-count");
 let searchActive = false;
 
 function clearSearchHighlights() {
-  document.querySelectorAll(".search-highlight").forEach(el => {
+  document.querySelectorAll(".search-highlight").forEach((el) => {
     const parent = el.parentNode;
     parent.replaceChild(document.createTextNode(el.textContent), el);
     parent.normalize();
@@ -842,13 +941,21 @@ function clearSearchHighlights() {
 
 function highlightSearch(term) {
   if (!term) return 0;
-  const messages = document.querySelectorAll("#chat-fullscreen-messages .message-bubble");
+  const messages = document.querySelectorAll(
+    "#chat-fullscreen-messages .message-bubble"
+  );
   let count = 0;
-  messages.forEach(bubble => {
+  messages.forEach((bubble) => {
     const originalText = bubble.childNodes[0]?.nodeValue || bubble.innerText;
     if (originalText.toLowerCase().includes(term.toLowerCase())) {
-      const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
-      const newHtml = originalText.replace(regex, '<span class="search-highlight">$1</span>');
+      const regex = new RegExp(
+        `(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+        "gi"
+      );
+      const newHtml = originalText.replace(
+        regex,
+        '<span class="search-highlight">$1</span>'
+      );
       bubble.innerHTML = newHtml;
       count++;
     }
@@ -927,7 +1034,11 @@ menuTheme.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (e) => {
-  if (themePanelVisible && !menuTheme.contains(e.target) && !themePanel.contains(e.target)) {
+  if (
+    themePanelVisible &&
+    !menuTheme.contains(e.target) &&
+    !themePanel.contains(e.target)
+  ) {
     closeThemePanel();
   }
 });
@@ -938,13 +1049,20 @@ const themeClose = document.getElementById("theme-close");
 
 function applyTheme(bgColor, bubbleColor, userBubbleColor) {
   const chatContainer = document.querySelector(".orientiug-chat-fullscreen");
-  const botBubbles = document.querySelectorAll(".message-wrapper.bot .message-bubble");
-  const userBubbles = document.querySelectorAll(".message-wrapper.user .message-bubble");
+  const botBubbles = document.querySelectorAll(
+    ".message-wrapper.bot .message-bubble"
+  );
+  const userBubbles = document.querySelectorAll(
+    ".message-wrapper.user .message-bubble"
+  );
 
   chatContainer.style.background = bgColor;
-  botBubbles.forEach(b => b.style.background = bubbleColor);
-  userBubbles.forEach(b => b.style.background = userBubbleColor);
-  localStorage.setItem("chatTheme", JSON.stringify({ bgColor, bubbleColor, userBubbleColor }));
+  botBubbles.forEach((b) => (b.style.background = bubbleColor));
+  userBubbles.forEach((b) => (b.style.background = userBubbleColor));
+  localStorage.setItem(
+    "chatTheme",
+    JSON.stringify({ bgColor, bubbleColor, userBubbleColor })
+  );
 }
 
 function loadChatTheme() {
@@ -955,7 +1073,7 @@ function loadChatTheme() {
   }
 }
 
-themeOptions.forEach(opt => {
+themeOptions.forEach((opt) => {
   opt.addEventListener("click", () => {
     const bg = opt.dataset.bg;
     const bubble = opt.dataset.bubble;
@@ -967,7 +1085,9 @@ themeOptions.forEach(opt => {
 
 themeReset.addEventListener("click", () => {
   document.querySelector(".orientiug-chat-fullscreen").style.background = "";
-  document.querySelectorAll(".message-bubble").forEach(b => b.style.background = "");
+  document
+    .querySelectorAll(".message-bubble")
+    .forEach((b) => (b.style.background = ""));
   localStorage.removeItem("chatTheme");
   closeThemePanel();
 });
@@ -979,7 +1099,11 @@ menuClear.addEventListener("click", () => {
   threeDotsMenu.classList.add("hidden");
   menuVisible = false;
   if (searchActive) closeSearchPanel();
-  if (confirm("Voulez-vous vraiment effacer tous les messages de cette conversation ?")) {
+  if (
+    confirm(
+      "Voulez-vous vraiment effacer tous les messages de cette conversation ?"
+    )
+  ) {
     chatMessages.innerHTML = "";
     localStorage.removeItem("orientiugChatMessages");
     messages = [];
@@ -1012,17 +1136,27 @@ if (clearFormBtn) {
 if (downloadFormBtn) {
   downloadFormBtn.addEventListener("click", async () => {
     // Validation des champs obligatoires
-    const requiredFields = document.querySelectorAll("#inscription-form input[required], #inscription-form select[required]");
+    const requiredFields = document.querySelectorAll(
+      "#inscription-form input[required], #inscription-form select[required]"
+    );
     let missing = [];
-    requiredFields.forEach(field => {
-      if (field.type === 'radio') {
-        const name = field.getAttribute('name');
+    requiredFields.forEach((field) => {
+      if (field.type === "radio") {
+        const name = field.getAttribute("name");
         const radioGroup = document.querySelectorAll(`input[name="${name}"]`);
-        const checked = Array.from(radioGroup).some(r => r.checked);
-        if (!checked) missing.push(field.closest(".field-group")?.querySelector("label")?.innerText.trim() || "Jour/Soir");
+        const checked = Array.from(radioGroup).some((r) => r.checked);
+        if (!checked)
+          missing.push(
+            field
+              .closest(".field-group")
+              ?.querySelector("label")
+              ?.innerText.trim() || "Jour/Soir"
+          );
       } else if (field.value.trim() === "") {
         const label = field.closest(".field-group")?.querySelector("label");
-        const fieldName = label ? label.innerText.replace("*", "").trim() : "champ";
+        const fieldName = label
+          ? label.innerText.replace("*", "").trim()
+          : "champ";
         missing.push(fieldName);
       }
     });
@@ -1040,25 +1174,37 @@ if (downloadFormBtn) {
     }
     const parentPhone = document.getElementById("parent-phone");
     if (parentPhone && !/^\d{9}$/.test(parentPhone.value.trim())) {
-      showToast("Le numéro de téléphone du père/tuteur doit comporter 9 chiffres.");
+      showToast(
+        "Le numéro de téléphone du père/tuteur doit comporter 9 chiffres."
+      );
       return;
     }
     const motherPhone = document.getElementById("mother-phone");
-    if (motherPhone && motherPhone.value.trim() !== "" && !/^\d{9}$/.test(motherPhone.value.trim())) {
+    if (
+      motherPhone &&
+      motherPhone.value.trim() !== "" &&
+      !/^\d{9}$/.test(motherPhone.value.trim())
+    ) {
       showToast("Le numéro de téléphone de la mère doit comporter 9 chiffres.");
       return;
     }
 
     // Validation de l'année d'obtention (4 chiffres)
     const gradYear = document.getElementById("graduation-year");
-    if (gradYear && gradYear.value.trim() !== "" && !/^\d{4}$/.test(gradYear.value.trim())) {
+    if (
+      gradYear &&
+      gradYear.value.trim() !== "" &&
+      !/^\d{4}$/.test(gradYear.value.trim())
+    ) {
       showToast("L'année d'obtention doit comporter 4 chiffres.");
       return;
     }
 
     // Nom du fichier
     let nom = "";
-    const nomInput = document.querySelector("#inscription-form input[placeholder='Nom du candidat']");
+    const nomInput = document.querySelector(
+      "#inscription-form input[placeholder='Nom du candidat']"
+    );
     if (nomInput && nomInput.value.trim()) {
       nom = nomInput.value.trim().replace(/\s+/g, "_");
     } else {
@@ -1083,14 +1229,14 @@ if (downloadFormBtn) {
     document.body.appendChild(tempContainer);
 
     // Attendre un peu pour que le rendu se fasse
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     const opt = {
-      margin:        [0.3, 0.3, 0.3, 0.3],
-      filename:     `${nom}_fiche_inscription.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, letterRendering: true, useCORS: false },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      margin: [0.3, 0.3, 0.3, 0.3],
+      filename: `${nom}_fiche_inscription.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, letterRendering: true, useCORS: false },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
     };
 
     try {
@@ -1135,7 +1281,7 @@ function onCubeAnimationEnd() {
   }
 }
 
-cubes.forEach(cube => {
+cubes.forEach((cube) => {
   cube.addEventListener("animationend", onCubeAnimationEnd);
 });
 
