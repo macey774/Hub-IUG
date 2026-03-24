@@ -259,7 +259,7 @@ function showChatFullscreen() {
   loadChatMessages();
   loadChatTheme();
   // Précharger le modèle intelligent
-  loadModel();
+  preloadModel();
 }
 
 // Variables pour la page d'inscription
@@ -471,29 +471,109 @@ function hideTypingIndicator() {
 // ===== MODÈLE INTELLIGENT (Transformers.js) =====
 let model = null;
 let modelLoading = false;
+let progressToastId = null;
+const modelLoadingIcon = document.getElementById("model-loading-icon");
+
+function showModelLoadingIcon() {
+  if (modelLoadingIcon) modelLoadingIcon.classList.remove("hidden");
+}
+
+function hideModelLoadingIcon() {
+  if (modelLoadingIcon) modelLoadingIcon.classList.add("hidden");
+}
+
+function waitForTransformers() {
+  return new Promise((resolve) => {
+    if (typeof transformers !== 'undefined') {
+      resolve();
+      return;
+    }
+    const checkInterval = setInterval(() => {
+      if (typeof transformers !== 'undefined') {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 100);
+  });
+}
+
+function showProgressToast(percentage, text) {
+  const container = document.getElementById("toast-container");
+  if (!container) return null;
+
+  let toast = document.getElementById("progress-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "progress-toast";
+    toast.className = "toast";
+    container.appendChild(toast);
+  }
+  toast.innerHTML = `<i class="fas fa-download fa-fw"></i> ${text} ${percentage}%`;
+  container.classList.remove("hidden");
+  return toast;
+}
+
+function updateProgressToast(percentage, text) {
+  const toast = document.getElementById("progress-toast");
+  if (toast) {
+    toast.innerHTML = `<i class="fas fa-download fa-fw"></i> ${text} ${percentage}%`;
+  }
+}
+
+function hideProgressToast() {
+  const toast = document.getElementById("progress-toast");
+  if (toast) toast.remove();
+  const container = document.getElementById("toast-container");
+  if (container && container.children.length === 0) {
+    container.classList.add("hidden");
+  }
+}
 
 async function loadModel() {
   if (model) return model;
   if (modelLoading) return;
 
   modelLoading = true;
-  showToast("Chargement du modèle d'IA... (premier lancement un peu long)");
+  showModelLoadingIcon();
 
   try {
-    // Vérifier que transformers est disponible
-    if (typeof transformers === 'undefined') {
-      throw new Error("Bibliothèque transformers.js non chargée");
-    }
+    showProgressToast(0, "Téléchargement de la bibliothèque...");
+    await waitForTransformers();
+
+    let lastPercent = 0;
+    const progressCallback = (progress) => {
+      if (progress.status === "downloading" && progress.total) {
+        const percent = Math.floor((progress.loaded / progress.total) * 100);
+        if (percent !== lastPercent) {
+          lastPercent = percent;
+          updateProgressToast(percent, "Téléchargement du modèle");
+        }
+      } else if (progress.status === "ready") {
+        updateProgressToast(100, "Téléchargement terminé");
+      }
+    };
+
+    updateProgressToast(0, "Initialisation...");
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    updateProgressToast(0, "Configuration des paramètres");
     const { pipeline } = transformers;
-    model = await pipeline('text-generation', 'Xenova/distilgpt2');
-    showToast("Modèle prêt ! Vous pouvez discuter.");
+
+    model = await pipeline('text-generation', 'Xenova/gpt2', {
+      progress_callback: progressCallback
+    });
+
+    hideProgressToast();
+    showToast("✅ Modèle prêt ! Vous pouvez discuter.");
     return model;
   } catch (error) {
     console.error("Erreur chargement modèle", error);
-    showToast("Impossible de charger le modèle. Utilisation du mode secours.");
+    hideProgressToast();
+    showToast("❌ Impossible de charger le modèle. Utilisation du mode secours.");
     model = null;
   } finally {
     modelLoading = false;
+    hideModelLoadingIcon();
   }
   return null;
 }
@@ -502,13 +582,9 @@ async function getBotResponseFromModel(userMessage, history) {
   const m = await loadModel();
   if (!m) return fallbackResponse(userMessage);
 
-  // Construire le prompt avec le contexte
-  let prompt = `Contexte : Vous êtes OrientIUG, un assistant d'orientation de l'Institut Universitaire du Golfe de Guinée (IUG).\n`;
-  prompt += `Vous connaissez les filières ESG (Gestion), ISTA (Informatique) et ISA (Agronomie), ainsi que les conditions d'admission, les pièces à fournir et la procédure d'inscription.\n`;
-  prompt += `Répondez de manière concise et utile en français.\n\n`;
+  let prompt = `Vous êtes un assistant d'orientation de l'Institut Universitaire du Golfe de Guinée (IUG). Vous connaissez les filières ESG (Gestion), ISTA (Informatique) et ISA (Agronomie), ainsi que les conditions d'admission, les pièces à fournir et la procédure d'inscription. Répondez de manière concise et utile en français. N'écrivez que la réponse, pas de préambule.\n\n`;
 
-  // Ajouter l'historique des 6 derniers messages
-  const recentHistory = history.slice(-6);
+  const recentHistory = history.slice(-5);
   for (let msg of recentHistory) {
     prompt += `${msg.isUser ? "Étudiant" : "Assistant"} : ${msg.text}\n`;
   }
@@ -522,7 +598,6 @@ async function getBotResponseFromModel(userMessage, history) {
       pad_token_id: 50256
     });
     let reply = output[0].generated_text;
-    // Extraire la partie après "Assistant :"
     const parts = reply.split("Assistant :");
     reply = parts[parts.length - 1].trim();
     if (!reply) return fallbackResponse(userMessage);
@@ -601,10 +676,8 @@ function addMessage(text, isUser = false, timestamp = null) {
     messageCount++;
     localStorage.setItem("messageCount", messageCount);
 
-    // Afficher l'indicateur de frappe
     showTypingIndicator();
 
-    // Appel au modèle intelligent
     getBotResponseFromModel(text, messages)
       .then(botResponse => {
         hideTypingIndicator();
@@ -1128,14 +1201,13 @@ if (clearFormBtn) {
   clearFormBtn.addEventListener("click", () => {
     const form = document.getElementById("inscription-form");
     if (form) form.reset();
-    setCurrentDate(); // remet la date du jour après réinitialisation
+    setCurrentDate();
     showToast("Tous les champs ont été vidés.");
   });
 }
 
 if (downloadFormBtn) {
   downloadFormBtn.addEventListener("click", async () => {
-    // Validation des champs obligatoires
     const requiredFields = document.querySelectorAll(
       "#inscription-form input[required], #inscription-form select[required]"
     );
@@ -1166,7 +1238,6 @@ if (downloadFormBtn) {
       return;
     }
 
-    // Validation des numéros de téléphone (9 chiffres)
     const studentPhone = document.getElementById("student-phone");
     if (studentPhone && !/^\d{9}$/.test(studentPhone.value.trim())) {
       showToast("Le numéro de téléphone étudiant doit comporter 9 chiffres.");
@@ -1189,7 +1260,6 @@ if (downloadFormBtn) {
       return;
     }
 
-    // Validation de l'année d'obtention (4 chiffres)
     const gradYear = document.getElementById("graduation-year");
     if (
       gradYear &&
@@ -1200,7 +1270,6 @@ if (downloadFormBtn) {
       return;
     }
 
-    // Nom du fichier
     let nom = "";
     const nomInput = document.querySelector(
       "#inscription-form input[placeholder='Nom du candidat']"
@@ -1211,7 +1280,6 @@ if (downloadFormBtn) {
       nom = "candidat";
     }
 
-    // Clone avec conteneur temporaire visible (opacity 0)
     const originalElement = document.getElementById("inscription-section");
     const clone = originalElement.cloneNode(true);
     const paper = clone.querySelector(".inscription-paper");
@@ -1228,7 +1296,6 @@ if (downloadFormBtn) {
     tempContainer.appendChild(clone);
     document.body.appendChild(tempContainer);
 
-    // Attendre un peu pour que le rendu se fasse
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     const opt = {
@@ -1305,3 +1372,9 @@ window.addEventListener("click", (e) => {
     loginModal.classList.add("hidden");
   }
 });
+
+function preloadModel() {
+  if (model) return;
+  if (modelLoading) return;
+  loadModel().catch(e => console.warn("Preload failed", e));
+}
