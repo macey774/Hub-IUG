@@ -13,8 +13,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <!-- Transformers.js pour l'assistant intelligent -->
-  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.5.0/dist/transformers.min.js"></script>
 </head>
 <body>
   <!-- SPLASH SCREEN : cubes formant l'icône -->
@@ -59,7 +57,6 @@
       </div>
       <!-- Actions du chat (cachées par défaut) -->
       <div id="chat-actions" class="chat-actions hidden">
-        <i id="model-loading-icon" class="fas fa-spinner fa-pulse hidden" style="font-size: 1.2rem; margin-right: 0.5rem;"></i>
         <button id="voice-call-btn" class="icon-btn" aria-label="Appel vocal">
           <i class="fas fa-phone"></i>
         </button>
@@ -178,6 +175,25 @@
           <p>Orientation personnalisée et conseils parcours.</p>
           <div class="card-footer">
             <button class="btn" id="orientiug-access">Accéder <i class="fas fa-arrow-right"></i></button>
+            <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
+              <i class="fas fa-play-circle"></i>
+            </button>
+          </div>
+          <div class="card-shine"></div>
+        </div>
+
+        <!-- Carte Wall of Success -->
+        <div class="card" id="wallofsuccess-card" data-url="#">
+          <div class="card-badges">
+            <span class="badge new">Nouveau</span>
+          </div>
+          <div class="icon-wrapper" style="background: linear-gradient(135deg, #2E8B57, #1F6E43);">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h2>Wall of Success</h2>
+          <p>Valorisation de l'excellence académique : découvrez les meilleurs étudiants de l'IUG.</p>
+          <div class="card-footer">
+            <button class="btn" id="wallofsuccess-access">Accéder <i class="fas fa-arrow-right"></i></button>
             <button class="video-tutoriel" data-video="https://www.youtube.com/watch?v=..." aria-label="Voir le tutoriel">
               <i class="fas fa-play-circle"></i>
             </button>
@@ -591,6 +607,38 @@
             </p>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- SECTION WALL OF SUCCESS (cachée par défaut) -->
+    <div id="wallofsuccess-section" class="wallofsuccess-section hidden">
+      <div class="wallofsuccess-header">
+        <h2><i class="fas fa-trophy"></i> Wall of Success</h2>
+        <p>Valorisation de l’excellence académique à l’IUG</p>
+      </div>
+
+      <div class="wallofsuccess-nav">
+        <div class="level-tabs">
+          <button class="tab-btn active" data-level="bts1">BTS 1</button>
+          <button class="tab-btn" data-level="bts2">BTS 2</button>
+          <button class="tab-btn" data-level="hnd1">HND 1</button>
+          <button class="tab-btn" data-level="hnd2">HND 2</button>
+        </div>
+        <div class="school-filters">
+          <button class="school-filter active" data-school="all">Toutes écoles</button>
+          <button class="school-filter" data-school="esg">ESG</button>
+          <button class="school-filter" data-school="ista">ISTA</button>
+          <button class="school-filter" data-school="isa">ISA</button>
+        </div>
+      </div>
+
+      <div id="rankings-container" class="rankings-container">
+        <div class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Chargement...</div>
+      </div>
+
+      <div class="wallofsuccess-footer">
+        <p class="note">Les classements sont basés sur les moyennes générales du semestre. En cas d’égalité, les critères subsidiaires sont appliqués (meilleure note en matière majeure, absence de note éliminatoire).</p>
+        <p class="info">🔒 Respect de la vie privée : seuls les étudiants ayant donné leur accord apparaissent.</p>
       </div>
     </div>
 
