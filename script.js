@@ -21,7 +21,9 @@ document.addEventListener("click", (e) => {
 });
 
 // ===== GESTION DU THÈME GLOBAL =====
-const themeToggles = document.querySelectorAll("#themeToggle, #mobileThemeToggle");
+const themeToggles = document.querySelectorAll(
+  "#themeToggle, #mobileThemeToggle"
+);
 const themeIcons = {
   desktop: document.querySelector("#themeToggle i"),
   mobile: document.querySelector("#mobileThemeToggle i")
@@ -258,8 +260,6 @@ function showChatFullscreen() {
   document.body.classList.add("chat-active");
   loadChatMessages();
   loadChatTheme();
-  // Précharger le modèle intelligent
-  preloadModel();
 }
 
 // Variables pour la page d'inscription
@@ -453,197 +453,6 @@ function addDateSeparator(date) {
   }
 }
 
-// ===== INDICATEUR DE FRAPPE =====
-const typingIndicator = document.createElement("div");
-typingIndicator.className = "typing-indicator hidden";
-typingIndicator.innerHTML = '<span></span><span></span><span></span>';
-chatMessages.parentNode.insertBefore(typingIndicator, chatMessages.nextSibling);
-
-function showTypingIndicator() {
-  typingIndicator.classList.remove("hidden");
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function hideTypingIndicator() {
-  typingIndicator.classList.add("hidden");
-}
-
-// ===== MODÈLE INTELLIGENT (Transformers.js) =====
-let model = null;
-let modelLoading = false;
-let progressToastId = null;
-const modelLoadingIcon = document.getElementById("model-loading-icon");
-
-function showModelLoadingIcon() {
-  if (modelLoadingIcon) modelLoadingIcon.classList.remove("hidden");
-}
-
-function hideModelLoadingIcon() {
-  if (modelLoadingIcon) modelLoadingIcon.classList.add("hidden");
-}
-
-function waitForTransformers() {
-  return new Promise((resolve) => {
-    if (typeof transformers !== 'undefined') {
-      resolve();
-      return;
-    }
-    const checkInterval = setInterval(() => {
-      if (typeof transformers !== 'undefined') {
-        clearInterval(checkInterval);
-        resolve();
-      }
-    }, 100);
-  });
-}
-
-function showProgressToast(percentage, text) {
-  const container = document.getElementById("toast-container");
-  if (!container) return null;
-
-  let toast = document.getElementById("progress-toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "progress-toast";
-    toast.className = "toast";
-    container.appendChild(toast);
-  }
-  toast.innerHTML = `<i class="fas fa-download fa-fw"></i> ${text} ${percentage}%`;
-  container.classList.remove("hidden");
-  return toast;
-}
-
-function updateProgressToast(percentage, text) {
-  const toast = document.getElementById("progress-toast");
-  if (toast) {
-    toast.innerHTML = `<i class="fas fa-download fa-fw"></i> ${text} ${percentage}%`;
-  }
-}
-
-function hideProgressToast() {
-  const toast = document.getElementById("progress-toast");
-  if (toast) toast.remove();
-  const container = document.getElementById("toast-container");
-  if (container && container.children.length === 0) {
-    container.classList.add("hidden");
-  }
-}
-
-async function loadModel() {
-  if (model) return model;
-  if (modelLoading) return;
-
-  modelLoading = true;
-  showModelLoadingIcon();
-
-  try {
-    showProgressToast(0, "Téléchargement de la bibliothèque...");
-    await waitForTransformers();
-
-    let lastPercent = 0;
-    const progressCallback = (progress) => {
-      if (progress.status === "downloading" && progress.total) {
-        const percent = Math.floor((progress.loaded / progress.total) * 100);
-        if (percent !== lastPercent) {
-          lastPercent = percent;
-          updateProgressToast(percent, "Téléchargement du modèle");
-        }
-      } else if (progress.status === "ready") {
-        updateProgressToast(100, "Téléchargement terminé");
-      }
-    };
-
-    updateProgressToast(0, "Initialisation...");
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    updateProgressToast(0, "Configuration des paramètres");
-    const { pipeline } = transformers;
-
-    model = await pipeline('text-generation', 'Xenova/gpt2', {
-      progress_callback: progressCallback
-    });
-
-    hideProgressToast();
-    showToast("✅ Modèle prêt ! Vous pouvez discuter.");
-    return model;
-  } catch (error) {
-    console.error("Erreur chargement modèle", error);
-    hideProgressToast();
-    showToast("❌ Impossible de charger le modèle. Utilisation du mode secours.");
-    model = null;
-  } finally {
-    modelLoading = false;
-    hideModelLoadingIcon();
-  }
-  return null;
-}
-
-async function getBotResponseFromModel(userMessage, history) {
-  const m = await loadModel();
-  if (!m) return fallbackResponse(userMessage);
-
-  let prompt = `Vous êtes un assistant d'orientation de l'Institut Universitaire du Golfe de Guinée (IUG). Vous connaissez les filières ESG (Gestion), ISTA (Informatique) et ISA (Agronomie), ainsi que les conditions d'admission, les pièces à fournir et la procédure d'inscription. Répondez de manière concise et utile en français. N'écrivez que la réponse, pas de préambule.\n\n`;
-
-  const recentHistory = history.slice(-5);
-  for (let msg of recentHistory) {
-    prompt += `${msg.isUser ? "Étudiant" : "Assistant"} : ${msg.text}\n`;
-  }
-  prompt += `Étudiant : ${userMessage}\nAssistant :`;
-
-  try {
-    const output = await m(prompt, {
-      max_new_tokens: 100,
-      temperature: 0.7,
-      do_sample: true,
-      pad_token_id: 50256
-    });
-    let reply = output[0].generated_text;
-    const parts = reply.split("Assistant :");
-    reply = parts[parts.length - 1].trim();
-    if (!reply) return fallbackResponse(userMessage);
-    return reply;
-  } catch (error) {
-    console.error("Erreur génération", error);
-    return fallbackResponse(userMessage);
-  }
-}
-
-function fallbackResponse(userMessage) {
-  const msg = userMessage.toLowerCase().trim();
-
-  if (msg.match(/^(bonjour|salut|coucou|hello|hey|yo)/i)) {
-    return "Bonjour ! Je suis OrientIUG, votre assistant d'orientation. Je peux vous aider à découvrir les filières de l'IUG, les débouchés, et même vous guider pour votre inscription. Que souhaitez‑vous savoir ?";
-  }
-  if (msg.includes("qui es-tu") || msg.includes("qui êtes-vous") || msg.includes("c'est quoi orientiug")) {
-    return "Je suis OrientIUG, un assistant virtuel conçu pour vous accompagner dans votre choix d'orientation à l'Institut Universitaire du Golfe de Guinée. Je connais toutes les filières, les débouchés et les conditions d'admission. N'hésitez pas à me poser des questions !";
-  }
-  if (msg.includes("présente iug") || msg.includes("qu'est-ce que l'iug") || msg.includes("c'est quoi l'iug") || msg.includes("parle moi de l'iug")) {
-    return "L'Institut Universitaire du Golfe de Guinée (IUG) est un établissement d'enseignement supérieur réputé. Il propose trois grandes filières :\n• ESG – Gestion et commerce\n• ISTA – Informatique et technologies\n• ISA – Agronomie et environnement\nNos formations sont conçues pour répondre aux besoins du marché et former des professionnels compétents.";
-  }
-  if (msg.includes("inscription") || msg.includes("s'inscrire") || msg.includes("comment s'inscrire") || msg.includes("fiche d'inscription")) {
-    return "Pour vous inscrire, vous devez remplir notre fiche d'inscription en ligne. Vous y trouverez tous les champs nécessaires (identité, coordonnées, parcours souhaité). <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>Cliquez ici pour accéder à la fiche d'inscription</a>. Une fois remplie, vous pourrez la télécharger en PDF.";
-  }
-  if (msg.includes("merci") || msg.includes("c'est tout") || msg.includes("super")) {
-    return "Avec plaisir ! Si vous souhaitez rejoindre l'IUG, n'hésitez pas à remplir notre fiche d'inscription : <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>cliquez ici</a>. Bonne continuation !";
-  }
-  if (msg.includes("esg") || msg.includes("débouchés")) {
-    return "La filière ESG prépare aux métiers de la gestion, du commerce et du management. Les débouchés incluent responsable RH, chargé de marketing, ou encore contrôleur de gestion.";
-  }
-  if (msg.includes("ista") || msg.includes("informatique")) {
-    return "ISTA forme aux métiers de l'informatique et du numérique. Vous pouvez devenir développeur, administrateur réseau, ou data analyst.";
-  }
-  if (msg.includes("isa") || msg.includes("agronomie")) {
-    return "ISA est spécialisé dans les sciences agronomiques et l'environnement. Les diplômés travaillent dans l'agroalimentaire, la gestion des ressources naturelles, ou la recherche.";
-  }
-  if (msg.includes("admission") || msg.includes("condition")) {
-    return "Les conditions d'admission varient selon les filières. En général, il faut un baccalauréat (séries selon la filière) et passer une étude de dossier. Consultez le site de l'IUG pour plus de détails.";
-  }
-  if (msg.includes("contact") || msg.includes("téléphone") || msg.includes("email")) {
-    return "Vous pouvez contacter l'IUG par téléphone au +237 6XX XX XX XX ou par email à contact@univ-iug.com. Pour toute question administrative, le secrétariat est ouvert du lundi au vendredi.";
-  }
-  return "Je n'ai pas encore appris à répondre à cette question. Pouvez-vous reformuler ou me poser une question sur les filières (ESG, ISTA, ISA), les débouchés, les conditions d'admission ou l'inscription ?";
-}
-
 function addMessage(text, isUser = false, timestamp = null) {
   const messageDate = timestamp ? new Date(timestamp) : new Date();
   addDateSeparator(messageDate);
@@ -675,20 +484,76 @@ function addMessage(text, isUser = false, timestamp = null) {
   if (isUser) {
     messageCount++;
     localStorage.setItem("messageCount", messageCount);
+    setTimeout(() => {
+      const botResponse = getBotResponse(text);
+      addMessage(botResponse, false);
+    }, 1000);
+  }
+}
 
-    showTypingIndicator();
+function getBotResponse(userMessage) {
+  const msg = userMessage.toLowerCase().trim();
 
-    getBotResponseFromModel(text, messages)
-      .then(botResponse => {
-        hideTypingIndicator();
-        addMessage(botResponse, false);
-      })
-      .catch(error => {
-        console.error(error);
-        hideTypingIndicator();
-        const fallback = fallbackResponse(text);
-        addMessage(fallback, false);
-      });
+  // Salutations
+  if (msg.match(/^(bonjour|salut|coucou|hello|hey|yo)/i)) {
+    return "Bonjour ! Je suis OrientIUG, votre assistant d'orientation. Je peux vous aider à découvrir les filières de l'IUG, les débouchés, et même vous guider pour votre inscription. Que souhaitez‑vous savoir ?";
+  }
+
+  // Présentation de l'assistant
+  if (
+    msg.includes("qui es-tu") ||
+    msg.includes("qui êtes-vous") ||
+    msg.includes("c'est quoi orientiug")
+  ) {
+    return "Je suis OrientIUG, un assistant virtuel conçu pour vous accompagner dans votre choix d'orientation à l'Institut Universitaire du Golfe de Guinée. Je connais toutes les filières, les débouchés et les conditions d'admission. N'hésitez pas à me poser des questions !";
+  }
+
+  // Présentation de l'IUG
+  if (
+    msg.includes("présente iug") ||
+    msg.includes("qu'est-ce que l'iug") ||
+    msg.includes("c'est quoi l'iug") ||
+    msg.includes("parle moi de l'iug")
+  ) {
+    return "L'Institut Universitaire du Golfe de Guinée (IUG) est un établissement d'enseignement supérieur réputé. Il propose trois grandes filières :\n• ESG – Gestion et commerce\n• ISTA – Informatique et technologies\n• ISA – Agronomie et environnement\nNos formations sont conçues pour répondre aux besoins du marché et former des professionnels compétents.";
+  }
+
+  // Demande d'inscription
+  if (
+    msg.includes("inscription") ||
+    msg.includes("s'inscrire") ||
+    msg.includes("comment s'inscrire") ||
+    msg.includes("fiche d'inscription")
+  ) {
+    return "Pour vous inscrire, vous devez remplir notre fiche d'inscription en ligne. Vous y trouverez tous les champs nécessaires (identité, coordonnées, parcours souhaité). <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>Cliquez ici pour accéder à la fiche d'inscription</a>. Une fois remplie, vous pourrez la télécharger en PDF.";
+  }
+
+  // Remerciement – on propose le lien
+  if (
+    msg.includes("merci") ||
+    msg.includes("c'est tout") ||
+    msg.includes("super")
+  ) {
+    return "Avec plaisir ! Si vous souhaitez rejoindre l'IUG, n'hésitez pas à remplir notre fiche d'inscription : <a href='#' onclick='enterInscriptionPage(); return false;' style='color: #3a7ca5; text-decoration: underline; cursor: pointer;'>cliquez ici</a>. Bonne continuation !";
+  }
+
+  // Questions sur les filières (déjà existantes)
+  if (msg.includes("esg") || msg.includes("débouchés")) {
+    return "La filière ESG prépare aux métiers de la gestion, du commerce et du management. Les débouchés incluent responsable RH, chargé de marketing, ou encore contrôleur de gestion.";
+  } else if (msg.includes("ista") || msg.includes("informatique")) {
+    return "ISTA forme aux métiers de l'informatique et du numérique. Vous pouvez devenir développeur, administrateur réseau, ou data analyst.";
+  } else if (msg.includes("isa") || msg.includes("agronomie")) {
+    return "ISA est spécialisé dans les sciences agronomiques et l'environnement. Les diplômés travaillent dans l'agroalimentaire, la gestion des ressources naturelles, ou la recherche.";
+  } else if (msg.includes("admission") || msg.includes("condition")) {
+    return "Les conditions d'admission varient selon les filières. En général, il faut un baccalauréat (séries selon la filière) et passer une étude de dossier. Consultez le site de l'IUG pour plus de détails.";
+  } else if (
+    msg.includes("contact") ||
+    msg.includes("téléphone") ||
+    msg.includes("email")
+  ) {
+    return "Vous pouvez contacter l'IUG par téléphone au +237 6XX XX XX XX ou par email à contact@univ-iug.com. Pour toute question administrative, le secrétariat est ouvert du lundi au vendredi.";
+  } else {
+    return "Je n'ai pas encore appris à répondre à cette question. Pouvez-vous reformuler ou me poser une question sur les filières (ESG, ISTA, ISA), les débouchés, les conditions d'admission ou l'inscription ?";
   }
 }
 
@@ -1193,6 +1058,40 @@ menuReport.addEventListener("click", () => {
   showToast("Merci de votre signalement. Nous traiterons votre demande.");
 });
 
+// ===== CENTRALISATION DES INSCRIPTIONS (LOCAL STORAGE + GOOGLE SHEETS) =====
+function getFormData() {
+  const nom = document.querySelector("#inscription-form input[placeholder='Nom de famille']")?.value.trim() || "";
+  const prenom = document.querySelector("#inscription-form input[placeholder='Prénom(s)']")?.value.trim() || "";
+  const email = document.querySelector("#inscription-form input[type='email']")?.value.trim() || "";
+  const telephone = document.querySelector("#inscription-form input[type='tel']")?.value.trim() || "";
+  const filiereSelect = document.querySelector("#inscription-form select");
+  const filiere = filiereSelect ? filiereSelect.value : "";
+  return { nom, prenom, email, telephone, filiere };
+}
+
+function saveInscription(data) {
+  let inscriptions = JSON.parse(localStorage.getItem("inscriptions")) || [];
+  const newInscription = { ...data, date: new Date().toLocaleString() };
+  inscriptions.push(newInscription);
+  localStorage.setItem("inscriptions", JSON.stringify(inscriptions));
+}
+
+async function envoyerVersGoogleSheets(donnees) {
+  // ⚠️ REMPLACEZ CETTE URL PAR LA VÔTRE (obtenue après déploiement du script Apps Script)
+  const URL_GOOGLE_SHEET = "https://script.google.com/macros/s/AKfycbznVotPLsRILOLRHvM2v-Vj24qMnmelqU-NpzNhTJ4XNisOtdna7hAXpCnJd7ShqN1P/exec";
+  try {
+    await fetch(URL_GOOGLE_SHEET, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(donnees)
+    });
+    console.log("Données envoyées à Google Sheets");
+  } catch (err) {
+    console.error("Erreur envoi Google Sheets :", err);
+  }
+}
+
 // ===== PAGE INSCRIPTION (formulaire) =====
 const inscriptionForm = document.getElementById("inscription-form");
 const inscriptionFeedback = document.getElementById("inscription-feedback");
@@ -1201,13 +1100,14 @@ if (clearFormBtn) {
   clearFormBtn.addEventListener("click", () => {
     const form = document.getElementById("inscription-form");
     if (form) form.reset();
-    setCurrentDate();
+    setCurrentDate(); // remet la date du jour après réinitialisation
     showToast("Tous les champs ont été vidés.");
   });
 }
 
 if (downloadFormBtn) {
   downloadFormBtn.addEventListener("click", async () => {
+    // Validation des champs obligatoires
     const requiredFields = document.querySelectorAll(
       "#inscription-form input[required], #inscription-form select[required]"
     );
@@ -1238,6 +1138,7 @@ if (downloadFormBtn) {
       return;
     }
 
+    // Validation des numéros de téléphone (9 chiffres)
     const studentPhone = document.getElementById("student-phone");
     if (studentPhone && !/^\d{9}$/.test(studentPhone.value.trim())) {
       showToast("Le numéro de téléphone étudiant doit comporter 9 chiffres.");
@@ -1260,6 +1161,7 @@ if (downloadFormBtn) {
       return;
     }
 
+    // Validation de l'année d'obtention (4 chiffres)
     const gradYear = document.getElementById("graduation-year");
     if (
       gradYear &&
@@ -1270,16 +1172,17 @@ if (downloadFormBtn) {
       return;
     }
 
-    let nom = "";
-    const nomInput = document.querySelector(
-      "#inscription-form input[placeholder='Nom du candidat']"
-    );
-    if (nomInput && nomInput.value.trim()) {
-      nom = nomInput.value.trim().replace(/\s+/g, "_");
-    } else {
-      nom = "candidat";
-    }
+    // Récupération des données pour l'envoi
+    const formData = getFormData();
+    // Sauvegarde locale
+    saveInscription(formData);
+    // Envoi vers Google Sheets
+    await envoyerVersGoogleSheets(formData);
 
+    // Nom du fichier PDF
+    let nom = formData.nom.replace(/\s+/g, "_") || "candidat";
+
+    // Clone avec conteneur temporaire visible (opacity 0)
     const originalElement = document.getElementById("inscription-section");
     const clone = originalElement.cloneNode(true);
     const paper = clone.querySelector(".inscription-paper");
@@ -1296,6 +1199,7 @@ if (downloadFormBtn) {
     tempContainer.appendChild(clone);
     document.body.appendChild(tempContainer);
 
+    // Attendre un peu pour que le rendu se fasse
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     const opt = {
@@ -1372,9 +1276,3 @@ window.addEventListener("click", (e) => {
     loginModal.classList.add("hidden");
   }
 });
-
-function preloadModel() {
-  if (model) return;
-  if (modelLoading) return;
-  loadModel().catch(e => console.warn("Preload failed", e));
-}
